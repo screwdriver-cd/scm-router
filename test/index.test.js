@@ -84,7 +84,7 @@ describe('index test', () => {
         githubScmMock.getOpenedPRs.returnsPromise().resolves('github');
         githubScmMock.getBellConfiguration.returnsPromise().resolves({ github: 'githubBell' });
         githubScmMock.getPrInfo.returnsPromise().resolves('github');
-        githubScmMock.canHandleWebhook.returnsPromise().rejects('cannot handle');
+        githubScmMock.canHandleWebhook.returnsPromise().resolves(false);
         githubScmMock.getScmContexts.returns(['github.context']);
         githubScmMock.getDisplayName.returns('github');
         gitlabScmMock = {
@@ -124,7 +124,7 @@ describe('index test', () => {
         gitlabScmMock.getOpenedPRs.returnsPromise().resolves('gitlab');
         gitlabScmMock.getBellConfiguration.returnsPromise().resolves({ gitlab: 'gitlabBell' });
         gitlabScmMock.getPrInfo.returnsPromise().resolves('gitlab');
-        gitlabScmMock.canHandleWebhook.returnsPromise().resolves('can handle');
+        gitlabScmMock.canHandleWebhook.returnsPromise().resolves(true);
         gitlabScmMock.getScmContexts.returns(['gitlab.context']);
         gitlabScmMock.getDisplayName.returns('gitlab');
         exampleScmMock = {
@@ -164,7 +164,7 @@ describe('index test', () => {
         exampleScmMock.getOpenedPRs.returnsPromise().resolves('example');
         exampleScmMock.getBellConfiguration.returnsPromise().resolves({ example: 'exampleBell' });
         exampleScmMock.getPrInfo.returnsPromise().resolves('example');
-        exampleScmMock.canHandleWebhook.returnsPromise().resolves('can handle');
+        exampleScmMock.canHandleWebhook.returnsPromise().resolves(true);
         exampleScmMock.getScmContexts.returns(['example.context']);
         exampleScmMock.getDisplayName.returns('example');
 
@@ -1005,7 +1005,7 @@ describe('index test', () => {
 
             return scm._canHandleWebhook(headers, payload)
             .then((result) => {
-                assert.strictEqual(result, 'can handle');
+                assert.strictEqual(result, true);
                 assert.notCalled(scmGithub.canHandleWebhook);
                 assert.notCalled(scmGitlab.canHandleWebhook);
                 assert.calledOnce(exampleScm.canHandleWebhook);

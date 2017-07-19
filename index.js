@@ -99,10 +99,10 @@ class ScmRouter extends Scm {
             // choose a webhook scm module, or undefined if there is no suitable one
             async.detectSeries(this.scms, (scm, cb) => {
                 scm.canHandleWebhook(headers, payload)
-                .then(() => {
-                    cb(true);
+                .then((result) => {
+                    cb(result === false ? null : scm);
                 }).catch(() => {
-                    cb(false);
+                    cb(null);
                 });
             }, (ret) => {
                 if (ret == null) {
