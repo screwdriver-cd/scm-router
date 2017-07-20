@@ -216,6 +216,16 @@ class ScmRouter extends Scm {
         return this.chooseScm(config, scm => scm.getPrInfo(config));
     }
 
+    stats() {
+        let result = {};
+
+        Object.keys(this.scms).forEach((key) => {
+            result = Object.assign(result, this.scms[key].stats());
+        });
+
+        return result;
+    }
+
     _getScmContexts() {
         return Promise.resolve(Object.keys(this.scms));
     }

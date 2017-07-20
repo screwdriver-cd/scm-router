@@ -64,6 +64,7 @@ describe('index test', () => {
             getOpenedPRs: sinon.stub(),
             getBellConfiguration: sinon.stub(),
             getPrInfo: sinon.stub(),
+            stats: sinon.stub(),
             canHandleWebhook: sinon.stub(),
             getScmContexts: sinon.stub(),
             getDisplayName: sinon.stub()
@@ -84,6 +85,7 @@ describe('index test', () => {
         githubScmMock.getOpenedPRs.returnsPromise().resolves('github');
         githubScmMock.getBellConfiguration.returnsPromise().resolves({ github: 'githubBell' });
         githubScmMock.getPrInfo.returnsPromise().resolves('github');
+        githubScmMock.stats.returns({ github: { requests: 'github' } });
         githubScmMock.canHandleWebhook.returnsPromise().resolves(false);
         githubScmMock.getScmContexts.returns(['github.context']);
         githubScmMock.getDisplayName.returns('github');
@@ -104,6 +106,7 @@ describe('index test', () => {
             getOpenedPRs: sinon.stub(),
             getBellConfiguration: sinon.stub(),
             getPrInfo: sinon.stub(),
+            stats: sinon.stub(),
             canHandleWebhook: sinon.stub(),
             getScmContexts: sinon.stub(),
             getDisplayName: sinon.stub()
@@ -124,6 +127,7 @@ describe('index test', () => {
         gitlabScmMock.getOpenedPRs.returnsPromise().resolves('gitlab');
         gitlabScmMock.getBellConfiguration.returnsPromise().resolves({ gitlab: 'gitlabBell' });
         gitlabScmMock.getPrInfo.returnsPromise().resolves('gitlab');
+        gitlabScmMock.stats.returns({ gitlab: { requests: 'gitlab' } });
         gitlabScmMock.canHandleWebhook.returnsPromise().resolves(true);
         gitlabScmMock.getScmContexts.returns(['gitlab.context']);
         gitlabScmMock.getDisplayName.returns('gitlab');
@@ -144,6 +148,7 @@ describe('index test', () => {
             getOpenedPRs: sinon.stub(),
             getBellConfiguration: sinon.stub(),
             getPrInfo: sinon.stub(),
+            stats: sinon.stub(),
             canHandleWebhook: sinon.stub(),
             getScmContexts: sinon.stub(),
             getDisplayName: sinon.stub()
@@ -164,6 +169,7 @@ describe('index test', () => {
         exampleScmMock.getOpenedPRs.returnsPromise().resolves('example');
         exampleScmMock.getBellConfiguration.returnsPromise().resolves({ example: 'exampleBell' });
         exampleScmMock.getPrInfo.returnsPromise().resolves('example');
+        exampleScmMock.stats.returns({ example: { requests: 'example' } });
         exampleScmMock.canHandleWebhook.returnsPromise().resolves(true);
         exampleScmMock.getScmContexts.returns(['example.context']);
         exampleScmMock.getDisplayName.returns('example');
@@ -987,6 +993,26 @@ describe('index test', () => {
             }).catch((err) => {
                 assert.fail(err);
             });
+        });
+    });
+
+    describe('stats', () => {
+        const stats = {
+            github: { requests: 'github' },
+            example: { requests: 'example' },
+            gitlab: { requests: 'gitlab' }
+        };
+
+        it('call origin stats', () => {
+            const scmGithub = scm.scms['github.context'];
+            const exampleScm = scm.scms['example.context'];
+            const scmGitlab = scm.scms['gitlab.context'];
+            const result = scm.stats();
+
+            assert.deepEqual(result, stats);
+            assert.calledOnce(scmGithub.stats);
+            assert.calledOnce(scmGitlab.stats);
+            assert.calledOnce(exampleScm.stats);
         });
     });
 
