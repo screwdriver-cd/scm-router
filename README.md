@@ -3,8 +3,7 @@
 
 > A generic scm plugin that routes builds to a specified scm
 
-An scm is an engine that is capable of running a set of docker containers together.
-An scm is interface for interacting with a source control management system.
+A scm is interface for interacting with a source control management system.
 
 i.e. Github, Bitbucket, Gitlab
 

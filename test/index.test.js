@@ -298,7 +298,9 @@ describe('index test', () => {
             assert.fail();
         });
 
-        it('does not throw an error when a npm module cannot be registered', () => {
+        it('throw an error when a npm module cannot be registered', () => {
+            const error = new Error('Cannot find module \'screwdriver-scm-DNE\'');
+
             try {
                 scm = new Scm({
                     ecosystem,
@@ -314,8 +316,11 @@ describe('index test', () => {
                     }]
                 });
             } catch (err) {
-                assert.fail(err);
+                assert.equal(err.message, error.message);
+
+                return;
             }
+            assert.fail();
         });
 
         it('registers a single plugin in scm', () => {
@@ -426,21 +431,22 @@ describe('index test', () => {
         });
 
         it('throw an error when not registered all scm plugins', () => {
+            githubScmMock.getScmContexts.returns(['']);
             const error = new Error('No scm config passed in.');
 
             try {
                 scm = new Scm({
                     ecosystem,
                     scms: [{
-                        plugin: 'DNE',
+                        plugin: 'github',
                         config: {
-                            displayName: 'DNE.com'
+                            displayName: 'github.com'
                         }
                     },
                     {
-                        plugin: 'DNE',
+                        plugin: 'github',
                         config: {
-                            displayName: 'DNE.com'
+                            displayName: 'github.com'
                         }
                     }]
                 });
@@ -495,7 +501,8 @@ describe('index test', () => {
             assert.deepEqual(exampleScm.constructorParams, exampleOptions);
         });
 
-        it('does not throw an error when a npm module cannot be registered', () => {
+        it('throw an error when a npm module cannot be registered', () => {
+            const error = new Error('Cannot find module \'screwdriver-scm-DNE\'');
             const config = Object.assign(
                 { ecosystem },
                 { displayName: 'DNE.com' }
@@ -504,11 +511,14 @@ describe('index test', () => {
             try {
                 scm.loadPlugin('DNE', config);
             } catch (err) {
-                assert.fail(err);
-            }
-            const scmGithub = scm.scms['github.context'];
+                const scmGithub = scm.scms['github.context'];
 
-            assert.deepEqual(scmGithub.constructorParams, githubOptions);
+                assert.equal(err.message, error.message);
+                assert.deepEqual(scmGithub.constructorParams, githubOptions);
+
+                return;
+            }
+            assert.fail();
         });
 
         it('does not throw an error when npm module return empty scmContext', () => {
@@ -667,7 +677,7 @@ describe('index test', () => {
                 assert.calledOnce(gitlabScmMock.getBellConfiguration);
                 assert.calledWith(gitlabScmMock.getBellConfiguration, config);
             }).catch((err) => {
-                assert.fail(err);
+                assert.throws(new Error(err));
             })
         );
 
@@ -678,7 +688,6 @@ describe('index test', () => {
             .then(() => {
                 assert.fail();
             }, (err) => {
-                assert.calledOnce(githubScmMock.getBellConfiguration);
                 assert.strictEqual(err, 'bell reject');
             }).catch((err) => {
                 assert.fail(err);
@@ -935,7 +944,7 @@ describe('index test', () => {
                 assert.calledOnce(exampleScm.getOpenedPRs);
                 assert.calledWith(exampleScm.getOpenedPRs, config);
             }).catch((err) => {
-                assert.fail(err);
+                assert.throws(new Error(err));
             });
         });
     });
@@ -955,7 +964,7 @@ describe('index test', () => {
                 assert.calledOnce(exampleScm.getBellConfiguration);
                 assert.calledOnce(scmGitlab.getBellConfiguration);
             }).catch((err) => {
-                assert.fail(err);
+                assert.throws(new Error(err));
             });
         });
     });
@@ -1006,9 +1015,10 @@ describe('index test', () => {
             return scm._canHandleWebhook(headers, payload)
             .then((result) => {
                 assert.strictEqual(result, true);
-                assert.notCalled(scmGithub.canHandleWebhook);
+                assert.called(scmGithub.canHandleWebhook);
+                assert.calledWith(scmGithub.canHandleWebhook, headers, payload);
                 assert.notCalled(scmGitlab.canHandleWebhook);
-                assert.calledOnce(exampleScm.canHandleWebhook);
+                assert.called(exampleScm.canHandleWebhook);
                 assert.calledWith(exampleScm.canHandleWebhook, headers, payload);
             }, done())
             .catch((err) => {
@@ -1017,14 +1027,14 @@ describe('index test', () => {
         });
     });
 
-    describe('_getDisplayName', () => {
+    describe('getDisplayName', () => {
         const config = { scmContext: 'example.context' };
 
         it('call origin getDisplayName', () => {
             const scmGithub = scm.scms['github.context'];
             const exampleScm = scm.scms['example.context'];
             const scmGitlab = scm.scms['gitlab.context'];
-            const result = scm._getDisplayName(config);
+            const result = scm.getDisplayName(config);
 
             assert.strictEqual(result, 'example');
             assert.notCalled(scmGithub.getDisplayName);
@@ -1038,7 +1048,7 @@ describe('index test', () => {
             const scmGithub = scm.scms['github.context'];
             const exampleScm = scm.scms['example.context'];
             const scmGitlab = scm.scms['gitlab.context'];
-            const result = scm._getDisplayName(hogeConfig);
+            const result = scm.getDisplayName(hogeConfig);
 
             assert.strictEqual(result, '');
             assert.notCalled(scmGithub.getDisplayName);
@@ -1051,7 +1061,7 @@ describe('index test', () => {
             const scmGithub = scm.scms['github.context'];
             const exampleScm = scm.scms['example.context'];
             const scmGitlab = scm.scms['gitlab.context'];
-            const result = scm._getDisplayName(hogeConfig);
+            const result = scm.getDisplayName(hogeConfig);
 
             assert.strictEqual(result, '');
             assert.notCalled(scmGithub.getDisplayName);

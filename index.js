@@ -58,17 +58,8 @@ class ScmRouter extends Scm {
     }
 
     loadPlugin(plugin, options) {
-        let ScmPlugin;
-
-        try {
-            // eslint-disable-next-line global-require, import/no-dynamic-require
-            ScmPlugin = require(`screwdriver-scm-${plugin}`);
-        } catch (err) {
-            console.warn(err);
-
-            return;
-        }
-
+        // eslint-disable-next-line global-require, import/no-dynamic-require
+        const ScmPlugin = require(`screwdriver-scm-${plugin}`);
         const scmPlugin = new ScmPlugin(options);
         const scmContexts = scmPlugin.getScmContexts();
         const scmContext = scmContexts[0]; // plugins return only one scmContext
@@ -142,24 +133,29 @@ class ScmRouter extends Scm {
      * Process by all scm module
      * @method allScm
      * @param  {Function}   callback            {Map} fn(scm)
-     * @return {Map}                            combined callback results
+     * @return {Promise}                        combined callback results
      */
     allScm(callback) {
-        let result = {};
-
         return new Promise((resolve, reject) => {
-            async.eachSeries(Object.values(this.scms), (scm, cb) => {
+            async.mapSeries(Object.keys(this.scms), (key, cb) => {
+                const scm = this.scms[key];
+
                 callback(scm)
                 .then((ret) => {
-                    result = Object.assign(result, ret);
-                    cb(null);
+                    cb(null, ret);
                 }, err => cb(err));
-            }, (err) => {
+            }, (err, results) => {
+                let map = {};
+
                 if (err) {
                     reject(err);
                 }
 
-                resolve(result);
+                results.forEach((result) => {
+                    map = Object.assign(map, result);
+                });
+
+                resolve(map);
             });
         });
     }
@@ -229,7 +225,7 @@ class ScmRouter extends Scm {
             scm => scm.canHandleWebhook(headers, payload));
     }
 
-    _getDisplayName(config) {
+    getDisplayName(config) {
         if (typeof this.scms[config.scmContext] !== 'object') {
             return '';
         }
