@@ -50,7 +50,7 @@ Code licensed under the BSD 3-Clause license. See LICENSE file for terms.
 [license-image]: https://img.shields.io/npm/l/screwdriver-scm-router.svg
 [issues-image]: https://img.shields.io/github/issues/screwdriver-cd/scm-router.svg
 [issues-url]: https://github.com/screwdriver-cd/scm-router/issues
-[status-image]: https://cd.screwdriver.cd/pipelines/1/badge
-[status-url]: https://cd.screwdriver.cd/pipelines/1
+[status-image]: https://cd.screwdriver.cd/pipelines/275/badge
+[status-url]: https://cd.screwdriver.cd/pipelines/275
 [daviddm-image]: https://david-dm.org/screwdriver-cd/scm-router.svg?theme=shields.io
 [daviddm-url]: https://david-dm.org/screwdriver-cd/scm-router
