@@ -286,7 +286,7 @@ describe('index test', () => {
         });
 
         it('throws an error when the displayName config does not exist', () => {
-            const error = new Error('No scm config passed in.');
+            const error = new Error('Display name not specified for github scm plugin');
 
             try {
                 scm = new Scm({
@@ -586,7 +586,8 @@ describe('index test', () => {
         const payload = { key: 'payload' };
 
         it('choose a webhookScm module', done =>
-            scm.chooseWebhookScm(headers, payload, module => module.dummyFunction(headers, payload))
+            scm.chooseWebhookScm(headers, payload)
+            .then(module => module.dummyFunction(headers, payload))
             .then((result) => {
                 assert.strictEqual(result, 'example');
                 assert.notCalled(githubScmMock.dummyFunction);
@@ -612,7 +613,8 @@ describe('index test', () => {
                 ]
             });
 
-            return scm.chooseWebhookScm(headers, payload, module => module.dummyFunction())
+            return scm.chooseWebhookScm(headers, payload)
+            .then(module => module.dummyFunction())
             .then(() => {
                 assert.fail();
             }, (err) => {
@@ -632,7 +634,8 @@ describe('index test', () => {
         const config = { scmContext: 'example.context' };
 
         it('choose a scm module', () =>
-            scm.chooseScm(config, module => module.dummyFunction(config))
+            scm.chooseScm(config)
+            .then(module => module.dummyFunction(config))
             .then((result) => {
                 assert.strictEqual(result, 'example');
                 assert.notCalled(githubScmMock.dummyFunction);
@@ -645,7 +648,8 @@ describe('index test', () => {
         );
 
         it('reject when the scmContext config does not exist', () =>
-            scm.chooseScm({ somekey: 'somevalue' }, module => module.dummyFunction())
+            scm.chooseScm({ somekey: 'somevalue' })
+            .then(module => module.dummyFunction())
             .then(() => {
                 assert.fail();
             }).catch((err) => {
@@ -654,7 +658,8 @@ describe('index test', () => {
         );
 
         it('reject when not registered appropriate scm plugin', () =>
-            scm.chooseScm({ scmContext: 'hoge.cotext' }, module => module.dummyFunction())
+            scm.chooseScm({ scmContext: 'hoge.cotext' })
+            .then(module => module.dummyFunction())
             .then(() => {
                 assert.fail();
             }, (err) => {
