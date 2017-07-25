@@ -1024,14 +1024,11 @@ describe('index test', () => {
     describe('_getScmContexts', () => {
         const context = ['github.context', 'example.context', 'gitlab.context'];
 
-        it('get registered scm list', () =>
-            scm._getScmContexts()
-            .then((result) => {
-                assert.deepEqual(result, context);
-            }).catch((err) => {
-                assert.fail(err);
-            })
-        );
+        it('get registered scm list', () => {
+            const result = scm._getScmContexts();
+
+            assert.deepEqual(result, context);
+        });
     });
 
     describe('_canHandleWebhook', () => {

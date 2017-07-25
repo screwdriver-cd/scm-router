@@ -10,7 +10,7 @@ class ScmRouter extends Scm {
     /**
      * Constructs a router for different scm strategies. At least one of Single-SCM and Multi-SCM is necessarily required.
      * @method constructor
-     * @param  {Object}         config                             Object with executor and ecosystem
+     * @param  {Object}         config                             Object with scm[s] and ecosystem
      * @param  {Object}         [config.ecosystem]                 Optional object with ecosystem values
      * @param  {Object}         config.scm                         Single-SCM. scm to load or a single scm object
      * @param  {String}         config.scm.plugin                  Single-SCM. Name of the scm NPM module to load
@@ -57,6 +57,12 @@ class ScmRouter extends Scm {
         }
     }
 
+    /**
+     * load scm module
+     * @method loadPlugin
+     * @param  {String}         plugin       load plugin name
+     * @param  {Object}         options      settings for scm module
+     */
     loadPlugin(plugin, options) {
         // eslint-disable-next-line global-require, import/no-dynamic-require
         const ScmPlugin = require(`screwdriver-scm-${plugin}`);
@@ -78,8 +84,8 @@ class ScmRouter extends Scm {
     }
 
     /**
-     * Process by choosen webhook scm module
-     * @method chooseScm
+     * choose webhook scm module
+     * @method chooseWebhookScm
      * @param  {Object}     headers          The request headers associated with the webhook payload
      * @param  {Object}     payload          The webhook payload received from the SCM service
      * @return {Promise}                     scm object
@@ -105,7 +111,7 @@ class ScmRouter extends Scm {
     }
 
     /**
-     * Process by choosen scm module
+     * choose scm module
      * @method chooseScm
      * @param  {Object}     config              Configuration
      * @param  {String}     config.scmContext   Name of scm context
@@ -225,7 +231,7 @@ class ScmRouter extends Scm {
     }
 
     _getScmContexts() {
-        return Promise.resolve(Object.keys(this.scms));
+        return Object.keys(this.scms);
     }
 
     _canHandleWebhook(headers, payload) {
