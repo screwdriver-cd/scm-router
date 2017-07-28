@@ -164,62 +164,163 @@ class ScmRouter extends Scm {
         });
     }
 
+    /**
+     * Adds the Screwdriver webhook to the SCM repository
+     * @method _addWebhook
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {Promise}                        Resolves when operation completed without failure
+     */
     _addWebhook(config) {
         return this.chooseScm(config).then(scm => scm.addWebhook(config));
     }
 
+    /**
+     * Parse the url for a repo for the specific source control
+     * @method _parseUrl
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {Promise}
+     */
     _parseUrl(config) {
         return this.chooseScm(config).then(scm => scm.parseUrl(config));
     }
 
+    /**
+     * Parse the webhook for the specific source control
+     * @method _parseHook
+     * @param  {Object}     headers     The request headers associated with the webhook payload
+     * @param  {Object}     payload     The webhook payload received from the SCM service
+     * @return {Promise}
+     */
     _parseHook(headers, payload) {
         return this.chooseWebhookScm(headers, payload).then(scm => scm.parseHook(headers, payload));
     }
 
+    /**
+     * Checkout the source code from a repository; resolves as an object with checkout commands
+     * @method _getCheckoutCommand
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {Promise}
+     */
     _getCheckoutCommand(config) {
         return this.chooseScm(config).then(scm => scm.getCheckoutCommand(config));
     }
 
+    /**
+     * Decorate the url for the specific source control
+     * @method _decorateUrl
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {Promise}
+     */
     _decorateUrl(config) {
         return this.chooseScm(config).then(scm => scm.decorateUrl(config));
     }
 
+    /**
+     * Decorate the commit for the specific source control
+     * @method _decorateCommit
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {Promise}
+     */
     _decorateCommit(config) {
         return this.chooseScm(config).then(scm => scm.decorateCommit(config));
     }
 
+    /**
+     * Decorate the author for the specific source control
+     * @method _decorateAuthor
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {Promise}
+     */
     _decorateAuthor(config) {
         return this.chooseScm(config).then(scm => scm.decorateAuthor(config));
     }
 
+    /**
+     * Get a users permissions on a repository
+     * @method _getPermissions
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {Promise}
+     */
     _getPermissions(config) {
         return this.chooseScm(config).then(scm => scm.getPermissions(config));
     }
 
+    /**
+     * Get a commit sha for a specific repo#branch or pull request
+     * @method _getCommitSha
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {Promise}
+     */
     _getCommitSha(config) {
         return this.chooseScm(config).then(scm => scm.getCommitSha(config));
     }
 
+    /**
+     * Update the commit status for a given repo and sha
+     * @method _updateCommitStatus
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {Promise}
+     */
     _updateCommitStatus(config) {
         return this.chooseScm(config).then(scm => scm.updateCommitStatus(config));
     }
 
+    /**
+     * Fetch content of a file from an scm repo
+     * @method _getFile
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {Promise}                        content of a scmContext file
+     */
     _getFile(config) {
         return this.chooseScm(config).then(scm => scm.getFile(config));
     }
 
+    /**
+     * Get list of objects which consists of opened PR names and its ref
+     * @method _getOpenedPRs
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {Promise}                        Opened PRs of scmContext
+     */
     _getOpenedPRs(config) {
         return this.chooseScm(config).then(scm => scm.getOpenedPRs(config));
     }
 
+    /**
+     * Return a valid Bell configuration of all registered modules (for OAuth)
+     * @method _getBellConfiguration
+     * @return {Promise}
+     */
     _getBellConfiguration() {
         return this.allScm(scm => scm.getBellConfiguration());
     }
 
+    /**
+     * Resolve a pull request object based on the config
+     * @method _getPrInfo
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {Promise}                        PR info of scmContext
+     */
     _getPrInfo(config) {
         return this.chooseScm(config).then(scm => scm.getPrInfo(config));
     }
 
+    /**
+     * Return statistics on the scm of all registered modules
+     * @method stats
+     * @return {Object} object           Hash containing metrics for the scm
+     */
     stats() {
         let result = {};
 
@@ -230,15 +331,34 @@ class ScmRouter extends Scm {
         return result;
     }
 
+    /**
+     * Get an array of scm context (e.g. [github.com, mygitlab_gitlab])
+     * @method _getScmContexts
+     * @return {Array}
+     */
     _getScmContexts() {
         return Object.keys(this.scms);
     }
 
+    /**
+     * Determine a scm module can handle the received webhook
+     * @method _canHandleWebhook
+     * @param  {Object}     headers     The request headers associated with the webhook payload
+     * @param  {Object}     payload     The webhook payload received from the SCM service
+     * @return {Promise}
+     */
     _canHandleWebhook(headers, payload) {
         return this.chooseWebhookScm(headers, payload)
             .then(scm => scm.canHandleWebhook(headers, payload));
     }
 
+    /**
+     * Get display name of scmContext
+     * @method getDisplayName
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {String}                         display name of scmContext
+     */
     getDisplayName(config) {
         if (typeof this.scms[config.scmContext] !== 'object') {
             return '';
