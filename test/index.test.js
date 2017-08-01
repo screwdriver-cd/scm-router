@@ -23,6 +23,7 @@ describe('index test', () => {
         store: 'http://store.com'
     };
     const githubPluginOptions = {
+        displayName: 'github.com',
         oauthClientId: 'OAUTH_CLIENT_ID',
         oauthClientSecret: 'OAUTH_CLIENT_SECRET',
         username: 'USERNAME',
@@ -183,11 +184,11 @@ describe('index test', () => {
 
         scm = new Scm({
             ecosystem,
-            scm: {
-                plugin: 'github',
-                github: githubPluginOptions
-            },
             scms: [
+                {
+                    plugin: 'github',
+                    config: githubPluginOptions
+                },
                 {
                     plugin: 'example',
                     config: examplePluginOptions
@@ -293,7 +294,7 @@ describe('index test', () => {
                     ecosystem,
                     scms: [{
                         plugin: 'github',
-                        config: githubPluginOptions
+                        config: {}
                     }]
                 });
             } catch (err) {
@@ -327,24 +328,6 @@ describe('index test', () => {
                 return;
             }
             assert.fail();
-        });
-
-        it('registers a single plugin in scm', () => {
-            try {
-                scm = new Scm({
-                    ecosystem,
-                    scm: {
-                        plugin: 'github',
-                        github: githubPluginOptions
-                    }
-                });
-            } catch (err) {
-                assert.fail(err);
-            }
-
-            const scmGithub = scm.scms['github.context'];
-
-            assert.deepEqual(scmGithub.constructorParams, githubOptions);
         });
 
         it('registers multiple plugins', () => {
@@ -409,9 +392,6 @@ describe('index test', () => {
             try {
                 scm = new Scm({
                     ecosystem,
-                    scm: {
-                        plugin: 'example'
-                    },
                     scms: [{
                         plugin: 'example',
                         config: {
@@ -480,10 +460,10 @@ describe('index test', () => {
             );
             scm = new Scm({
                 ecosystem,
-                scm: {
+                scms: [{
                     plugin: 'github',
-                    github: githubPluginOptions
-                }
+                    config: githubPluginOptions
+                }]
             });
         });
 
@@ -552,8 +532,8 @@ describe('index test', () => {
 
         it('does not throw an error and overwrite when duplicate scm plugins', () => {
             githubOptions = Object.assign(
-                githubOptions,
-                { displayName: 'my.github.com' }
+                { displayName: 'my.github.com' },
+                githubOptions
             );
             const configDummy = {
                 displayName: 'hoge.com'

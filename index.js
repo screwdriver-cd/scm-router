@@ -8,34 +8,23 @@ process.on('unhandledRejection', console.dir);
 
 class ScmRouter extends Scm {
     /**
-     * Constructs a router for different scm strategies. At least one of Single-SCM and Multi-SCM is necessarily required.
+     * Constructs a router for different scm strategies
      * @method constructor
-     * @param  {Object}         config                             Object with scm[s] and ecosystem
+     * @param  {Object}         config                             Object with scms and ecosystem
      * @param  {Object}         [config.ecosystem]                 Optional object with ecosystem values
-     * @param  {Object}         config.scm                         Single-SCM. scm to load or a single scm object
-     * @param  {String}         config.scm.plugin                  Single-SCM. Name of the scm NPM module to load
-     * @param  {String}         config.scm.config                  Single-SCM. Configuration to construct the module with
-     * @param  {Array|Object}   config.scms                        Multi-SCM. Array of scms to load or a single scm object
-     * @param  {String}         config.scms[x].plugin              Multi-SCM. Name of the scm NPM module to load
-     * @param  {String}         config.scms[x].config              Multi-SCM. Configuration to construct the module with
-     * @param  {String}         config.scms[x].config.displayName  Multi-SCM. Nickname to displaoy of the scm
+     * @param  {Object}         config.scms                        Array of scms to load or a single scm object
+     * @param  {String}         config.scms[x].plugin              Name of the scm NPM module to load
+     * @param  {String}         config.scms[x].config              Configuration to construct the module with
+     * @param  {String}         config.scms[x].config.displayName  Nickname to displaoy of the scm
      * @return {ScmRouter}
      */
     constructor(config = {}) {
         const ecosystem = config.ecosystem;
-        const scmConfig = config.scm;
         const scmsConfig = config.scms;
 
         super();
 
         this.scms = {};
-
-        if (typeof scmConfig === 'object') {
-            const options = hoek.applyToDefaults({ ecosystem },
-                (scmConfig[scmConfig.plugin] || {})); // Add ecosystem to scm options
-
-            this.loadPlugin(scmConfig.plugin, options);
-        }
 
         if (typeof scmsConfig === 'object') {
             if (!(Array.isArray(scmsConfig))) {
