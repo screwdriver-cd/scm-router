@@ -7,10 +7,10 @@ const assert = chai.assert;
 const mockery = require('mockery');
 const sinon = require('sinon');
 const testScm = require('./data/testScm');
-const sinonStubPromise = require('sinon-stub-promise');
+// const sinonStubPromise = require('sinon-stub-promise');
 
 sinon.assert.expose(chai.assert, { prefix: '' });
-sinonStubPromise(sinon);
+// sinonStubPromise(sinon);
 
 describe('index test', () => {
     let Scm;
@@ -38,6 +38,32 @@ describe('index test', () => {
     const examplePluginOptions = {
         displayName: 'example.com',
         somekey: 'somevalue'
+    };
+    const initMock = (mock, plugin) => {
+        [
+            'dummyFunction',
+            'dummyRejectFunction',
+            'addWebhook',
+            'parseUrl',
+            'parseHook',
+            'getCheckoutCommand',
+            'decorateUrl',
+            'decorateCommit',
+            'decorateAuthor',
+            'getPermissions',
+            'getCommitSha',
+            'updateCommitStatus',
+            'getFile',
+            'getOpenedPRs',
+            'getPrInfo'
+        ].forEach((method) => {
+            mock[method].resolves(plugin);
+        });
+        mock.getBellConfiguration.resolves({ [plugin]: `${plugin}Bell` });
+        mock.stats.returns({ [plugin]: { requests: plugin } });
+        mock.canHandleWebhook.resolves(true);
+        mock.getScmContexts.returns([`${plugin}.context`]);
+        mock.getDisplayName.returns(plugin);
     };
 
     before(() => {
@@ -70,26 +96,8 @@ describe('index test', () => {
             getScmContexts: sinon.stub(),
             getDisplayName: sinon.stub()
         };
-        githubScmMock.dummyFunction.returnsPromise().resolves('github');
-        githubScmMock.dummyRejectFunction.returnsPromise().rejects('github');
-        githubScmMock.addWebhook.returnsPromise().resolves('github');
-        githubScmMock.parseUrl.returnsPromise().resolves('github');
-        githubScmMock.parseHook.returnsPromise().resolves('github');
-        githubScmMock.getCheckoutCommand.returnsPromise().resolves('github');
-        githubScmMock.decorateUrl.returnsPromise().resolves('github');
-        githubScmMock.decorateCommit.returnsPromise().resolves('github');
-        githubScmMock.decorateAuthor.returnsPromise().resolves('github');
-        githubScmMock.getPermissions.returnsPromise().resolves('github');
-        githubScmMock.getCommitSha.returnsPromise().resolves('github');
-        githubScmMock.updateCommitStatus.returnsPromise().resolves('github');
-        githubScmMock.getFile.returnsPromise().resolves('github');
-        githubScmMock.getOpenedPRs.returnsPromise().resolves('github');
-        githubScmMock.getBellConfiguration.returnsPromise().resolves({ github: 'githubBell' });
-        githubScmMock.getPrInfo.returnsPromise().resolves('github');
-        githubScmMock.stats.returns({ github: { requests: 'github' } });
-        githubScmMock.canHandleWebhook.returnsPromise().resolves(false);
-        githubScmMock.getScmContexts.returns(['github.context']);
-        githubScmMock.getDisplayName.returns('github');
+        initMock(githubScmMock, 'github');
+        githubScmMock.canHandleWebhook.resolves(false);
         gitlabScmMock = {
             dummyFunction: sinon.stub(),
             dummyRejectFunction: sinon.stub(),
@@ -112,26 +120,7 @@ describe('index test', () => {
             getScmContexts: sinon.stub(),
             getDisplayName: sinon.stub()
         };
-        gitlabScmMock.dummyFunction.returnsPromise().resolves('gitlab');
-        gitlabScmMock.dummyRejectFunction.returnsPromise().rejects('github');
-        gitlabScmMock.addWebhook.returnsPromise().resolves('gitlab');
-        gitlabScmMock.parseUrl.returnsPromise().resolves('gitlab');
-        gitlabScmMock.parseHook.returnsPromise().resolves('gitlab');
-        gitlabScmMock.getCheckoutCommand.returnsPromise().resolves('gitlab');
-        gitlabScmMock.decorateUrl.returnsPromise().resolves('gitlab');
-        gitlabScmMock.decorateCommit.returnsPromise().resolves('gitlab');
-        gitlabScmMock.decorateAuthor.returnsPromise().resolves('gitlab');
-        gitlabScmMock.getPermissions.returnsPromise().resolves('gitlab');
-        gitlabScmMock.getCommitSha.returnsPromise().resolves('gitlab');
-        gitlabScmMock.updateCommitStatus.returnsPromise().resolves('gitlab');
-        gitlabScmMock.getFile.returnsPromise().resolves('gitlab');
-        gitlabScmMock.getOpenedPRs.returnsPromise().resolves('gitlab');
-        gitlabScmMock.getBellConfiguration.returnsPromise().resolves({ gitlab: 'gitlabBell' });
-        gitlabScmMock.getPrInfo.returnsPromise().resolves('gitlab');
-        gitlabScmMock.stats.returns({ gitlab: { requests: 'gitlab' } });
-        gitlabScmMock.canHandleWebhook.returnsPromise().resolves(true);
-        gitlabScmMock.getScmContexts.returns(['gitlab.context']);
-        gitlabScmMock.getDisplayName.returns('gitlab');
+        initMock(gitlabScmMock, 'gitlab');
         exampleScmMock = {
             dummyFunction: sinon.stub(),
             dummyRejectFunction: sinon.stub(),
@@ -154,26 +143,7 @@ describe('index test', () => {
             getScmContexts: sinon.stub(),
             getDisplayName: sinon.stub()
         };
-        exampleScmMock.dummyFunction.returnsPromise().resolves('example');
-        exampleScmMock.dummyRejectFunction.returnsPromise().rejects('github');
-        exampleScmMock.addWebhook.returnsPromise().resolves('example');
-        exampleScmMock.parseUrl.returnsPromise().resolves('example');
-        exampleScmMock.parseHook.returnsPromise().resolves('example');
-        exampleScmMock.getCheckoutCommand.returnsPromise().resolves('example');
-        exampleScmMock.decorateUrl.returnsPromise().resolves('example');
-        exampleScmMock.decorateCommit.returnsPromise().resolves('example');
-        exampleScmMock.decorateAuthor.returnsPromise().resolves('example');
-        exampleScmMock.getPermissions.returnsPromise().resolves('example');
-        exampleScmMock.getCommitSha.returnsPromise().resolves('example');
-        exampleScmMock.updateCommitStatus.returnsPromise().resolves('example');
-        exampleScmMock.getFile.returnsPromise().resolves('example');
-        exampleScmMock.getOpenedPRs.returnsPromise().resolves('example');
-        exampleScmMock.getBellConfiguration.returnsPromise().resolves({ example: 'exampleBell' });
-        exampleScmMock.getPrInfo.returnsPromise().resolves('example');
-        exampleScmMock.stats.returns({ example: { requests: 'example' } });
-        exampleScmMock.canHandleWebhook.returnsPromise().resolves(true);
-        exampleScmMock.getScmContexts.returns(['example.context']);
-        exampleScmMock.getDisplayName.returns('example');
+        initMock(exampleScmMock, 'example');
 
         mockery.registerMock('screwdriver-scm-github', testScm(githubScmMock));
         mockery.registerMock('screwdriver-scm-gitlab', testScm(gitlabScmMock));
@@ -673,13 +643,13 @@ describe('index test', () => {
         );
 
         it('reject when origin 1st scm plugin rejects', () => {
-            githubScmMock.getBellConfiguration.returnsPromise().rejects('bell reject');
+            githubScmMock.getBellConfiguration.rejects('bell reject');
 
             return scm.allScm(module => module.getBellConfiguration())
             .then(() => {
                 assert.fail();
             }, (err) => {
-                assert.strictEqual(err, 'bell reject');
+                assert.equal(err, 'bell reject');
             }).catch((err) => {
                 assert.fail(err);
             });

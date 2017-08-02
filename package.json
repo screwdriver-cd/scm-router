@@ -38,8 +38,7 @@
     "hoek": "^4.1.1",
     "jenkins-mocha": "^4.0.0",
     "mockery": "^2.0.0",
-    "sinon": "^2.3.4",
-    "sinon-stub-promise": "^4.0.0"
+    "sinon": "^2.3.4"
   },
   "dependencies": {
     "async": "^2.0.1",

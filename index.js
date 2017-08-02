@@ -31,13 +31,14 @@ class ScmRouter extends Scm {
                 throw new Error('No scm config passed in.');
             }
             scmsConfig.forEach((scm) => {
-                if (scm.config.displayName == null || scm.config.displayName.length === 0) {
+                if (scm.config.displayName && typeof scm.config.displayName === 'string') {
+                    const options = hoek.applyToDefaults({ ecosystem },
+                        (scm.config || {}));  // Add ecosystem to scm options
+
+                    this.loadPlugin(scm.plugin, options);
+                } else {
                     throw new Error(`Display name not specified for ${scm.plugin} scm plugin`);
                 }
-                const options = hoek.applyToDefaults({ ecosystem },
-                    (scm.config || {}));  // Add ecosystem to scm options
-
-                this.loadPlugin(scm.plugin, options);
             });
         }
 
@@ -86,11 +87,11 @@ class ScmRouter extends Scm {
             // choose a webhook scm module, or null if there is no suitable one
             async.detectSeries(this.scms, (scm, cb) => {
                 scm.canHandleWebhook(headers, payload)
-                .then((result) => {
-                    cb(result === false ? null : scm);
-                }).catch(() => {
-                    cb(null);
-                });
+                    .then((result) => {
+                        cb(result === false ? null : scm);
+                    }).catch(() => {
+                        cb(null);
+                    });
             }, (ret) => {
                 if (ret == null) {
                     reject('there is no suitable webhook module');
@@ -110,24 +111,24 @@ class ScmRouter extends Scm {
      */
     chooseScm(config) {
         return new Promise((resolve, reject) => {
-            if (config.scmContext == null || config.scmContext.length === 0) {
+            if (config.scmContext && typeof config.scmContext === 'string') {
+                const scm = this.scms[config.scmContext];
+
+                if (typeof scm !== 'object') {
+                    reject('Not implemented');
+                }
+
+                resolve(scm);
+            } else {
                 reject('Not implemented');
             }
-
-            const scm = this.scms[config.scmContext];
-
-            if (typeof scm !== 'object') {
-                reject('Not implemented');
-            }
-
-            resolve(scm);
         });
     }
 
     /**
      * Process by all scm module
      * @method allScm
-     * @param  {Function}   callback            {Map} fn(scm)
+     * @param  {function(scm)}                  callback to return map
      * @return {Promise}                        combined callback results
      */
     allScm(callback) {
@@ -136,9 +137,9 @@ class ScmRouter extends Scm {
                 const scm = this.scms[key];
 
                 callback(scm)
-                .then((ret) => {
-                    cb(null, ret);
-                }, err => cb(err));
+                    .then((ret) => {
+                        cb(null, ret);
+                    }, err => cb(err));
             }, (err, results) => {
                 let map = {};
 
