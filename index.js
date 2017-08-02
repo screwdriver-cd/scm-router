@@ -54,6 +54,12 @@ class ScmRouter extends Scm {
      * @param  {Object}         options      settings for scm module
      */
     loadPlugin(plugin, options) {
+        if (plugin === 'router') {
+            console.warn('The plugin of scm-router can not be specified for scms setting');
+
+            return;
+        }
+
         // eslint-disable-next-line global-require, import/no-dynamic-require
         const ScmPlugin = require(`screwdriver-scm-${plugin}`);
         const scmPlugin = new ScmPlugin(options);
@@ -352,7 +358,7 @@ class ScmRouter extends Scm {
      * @return {String}                         display name of scmContext
      */
     getDisplayName(config) {
-        return this.scms[config.scmContext].getDisplayName(config);
+        return this.scms[config.scmContext].getDisplayName();
     }
 }
 

@@ -477,6 +477,28 @@ describe('index test', () => {
             assert.fail();
         });
 
+        it('does not throw an error when scm-router plugin be specified for scms setting', () => {
+            const config = Object.assign(
+                { ecosystem },
+                { displayName: 'example.com' },
+                examplePluginOptions
+            );
+
+            try {
+                scm.loadPlugin('router', config);
+            } catch (err) {
+                assert.fail(err);
+            }
+
+            const scmGithub = scm.scms['github.context'];
+            const exampleScm = scm.scms['example.context'];
+            const scmGitlab = scm.scms['gitlab.context'];
+
+            assert.deepEqual(scmGithub.constructorParams, githubOptions);
+            assert.equal(scmGitlab, null);
+            assert.equal(exampleScm, null);
+        });
+
         it('does not throw an error when npm module return empty scmContext', () => {
             exampleScmMock.getScmContexts.returns(['']);
             const config = Object.assign(
@@ -1018,7 +1040,6 @@ describe('index test', () => {
             assert.notCalled(scmGithub.getDisplayName);
             assert.notCalled(scmGitlab.getDisplayName);
             assert.calledOnce(exampleScm.getDisplayName);
-            assert.calledWith(exampleScm.getDisplayName, config);
         });
     });
 });
