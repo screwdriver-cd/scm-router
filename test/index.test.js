@@ -388,19 +388,19 @@ describe('index test', () => {
             assert.deepEqual(exampleScm.constructorParams, exampleOptions);
         });
 
-        it('does not throw an error and overwrite when duplicate scm plugins', () => {
+        it('does not throw an error and not overwrited when duplicate scm plugins', () => {
             try {
                 scm = new Scm({
                     ecosystem,
                     scms: [{
                         plugin: 'example',
-                        config: {
-                            displayName: 'hoge'
-                        }
+                        config: examplePluginOptions
                     },
                     {
                         plugin: 'example',
-                        config: examplePluginOptions
+                        config: {
+                            displayName: 'hoge'
+                        }
                     }]
                 });
             } catch (err) {

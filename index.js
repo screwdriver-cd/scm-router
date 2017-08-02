@@ -67,6 +67,8 @@ class ScmRouter extends Scm {
 
         if (typeof this.scms[scmContext] === 'object') {
             console.warn(`Duplicate scm config for ${scmContext}`);
+
+            return;
         }
 
         this.scms[scmContext] = scmPlugin;
