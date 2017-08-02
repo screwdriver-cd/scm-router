@@ -66,7 +66,7 @@ class ScmRouter extends Scm {
         const scmContexts = scmPlugin.getScmContexts();
         const scmContext = scmContexts[0]; // plugins return only one scmContext
 
-        if (scmContext == null || scmContext.length === 0) {
+        if (!scmContext || typeof scmContext !== 'string') {
             console.warn(`Illegal scmContext for ${plugin} scm plugin`);
 
             return;
@@ -99,7 +99,7 @@ class ScmRouter extends Scm {
                         cb(null);
                     });
             }, (ret) => {
-                if (ret == null) {
+                if (ret === null) {
                     reject('there is no suitable webhook module');
                 }
 
@@ -330,7 +330,7 @@ class ScmRouter extends Scm {
     }
 
     /**
-     * Get an array of scm context (e.g. [github.com, mygitlab_gitlab])
+     * Get an array of scm context (e.g. [github:github.com, gitlab:mygitlab])
      * @method _getScmContexts
      * @return {Array}
      */
