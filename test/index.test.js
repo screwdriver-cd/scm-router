@@ -1050,31 +1050,5 @@ describe('index test', () => {
             assert.calledOnce(exampleScm.getDisplayName);
             assert.calledWith(exampleScm.getDisplayName, config);
         });
-
-        it('call getDisplayName with scmContext does not exist', () => {
-            const hogeConfig = { somekey: 'somevalue' };
-            const scmGithub = scm.scms['github.context'];
-            const exampleScm = scm.scms['example.context'];
-            const scmGitlab = scm.scms['gitlab.context'];
-            const result = scm.getDisplayName(hogeConfig);
-
-            assert.strictEqual(result, '');
-            assert.notCalled(scmGithub.getDisplayName);
-            assert.notCalled(scmGitlab.getDisplayName);
-            assert.notCalled(exampleScm.getDisplayName);
-        });
-
-        it('call getDisplayName with not registered scmContext', () => {
-            const hogeConfig = { scmContext: 'hoge.context' };
-            const scmGithub = scm.scms['github.context'];
-            const exampleScm = scm.scms['example.context'];
-            const scmGitlab = scm.scms['gitlab.context'];
-            const result = scm.getDisplayName(hogeConfig);
-
-            assert.strictEqual(result, '');
-            assert.notCalled(scmGithub.getDisplayName);
-            assert.notCalled(scmGitlab.getDisplayName);
-            assert.notCalled(exampleScm.getDisplayName);
-        });
     });
 });

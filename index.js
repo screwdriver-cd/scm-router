@@ -349,10 +349,6 @@ class ScmRouter extends Scm {
      * @return {String}                         display name of scmContext
      */
     getDisplayName(config) {
-        if (typeof this.scms[config.scmContext] !== 'object') {
-            return '';
-        }
-
         return this.scms[config.scmContext].getDisplayName(config);
     }
 }
