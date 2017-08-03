@@ -37,7 +37,9 @@ describe('index test', () => {
         displayName: 'example.com',
         somekey: 'somevalue'
     };
-    const initMock = (mock, plugin) => {
+    const initMock = (plugin) => {
+        const mock = {};
+
         [
             'dummyFunction',
             'dummyRejectFunction',
@@ -55,13 +57,15 @@ describe('index test', () => {
             'getOpenedPRs',
             'getPrInfo'
         ].forEach((method) => {
-            mock[method].resolves(plugin);
+            mock[method] = sinon.stub().resolves(plugin);
         });
-        mock.getBellConfiguration.resolves({ [plugin]: `${plugin}Bell` });
-        mock.stats.returns({ [plugin]: { requests: plugin } });
-        mock.canHandleWebhook.resolves(true);
-        mock.getScmContexts.returns([`${plugin}.context`]);
-        mock.getDisplayName.returns(plugin);
+        mock.getBellConfiguration = sinon.stub().resolves({ [plugin]: `${plugin}Bell` });
+        mock.stats = sinon.stub().returns({ [plugin]: { requests: plugin } });
+        mock.canHandleWebhook = sinon.stub().resolves(true);
+        mock.getScmContexts = sinon.stub().returns([`${plugin}.context`]);
+        mock.getDisplayName = sinon.stub().returns(plugin);
+
+        return mock;
     };
 
     before(() => {
@@ -72,76 +76,10 @@ describe('index test', () => {
     });
 
     beforeEach(() => {
-        githubScmMock = {
-            dummyFunction: sinon.stub(),
-            dummyRejectFunction: sinon.stub(),
-            addWebhook: sinon.stub(),
-            parseUrl: sinon.stub(),
-            parseHook: sinon.stub(),
-            getCheckoutCommand: sinon.stub(),
-            decorateUrl: sinon.stub(),
-            decorateCommit: sinon.stub(),
-            decorateAuthor: sinon.stub(),
-            getPermissions: sinon.stub(),
-            getCommitSha: sinon.stub(),
-            updateCommitStatus: sinon.stub(),
-            getFile: sinon.stub(),
-            getOpenedPRs: sinon.stub(),
-            getBellConfiguration: sinon.stub(),
-            getPrInfo: sinon.stub(),
-            stats: sinon.stub(),
-            canHandleWebhook: sinon.stub(),
-            getScmContexts: sinon.stub(),
-            getDisplayName: sinon.stub()
-        };
-        initMock(githubScmMock, 'github');
+        githubScmMock = initMock('github');
         githubScmMock.canHandleWebhook.resolves(false);
-        gitlabScmMock = {
-            dummyFunction: sinon.stub(),
-            dummyRejectFunction: sinon.stub(),
-            addWebhook: sinon.stub(),
-            parseUrl: sinon.stub(),
-            parseHook: sinon.stub(),
-            getCheckoutCommand: sinon.stub(),
-            decorateUrl: sinon.stub(),
-            decorateCommit: sinon.stub(),
-            decorateAuthor: sinon.stub(),
-            getPermissions: sinon.stub(),
-            getCommitSha: sinon.stub(),
-            updateCommitStatus: sinon.stub(),
-            getFile: sinon.stub(),
-            getOpenedPRs: sinon.stub(),
-            getBellConfiguration: sinon.stub(),
-            getPrInfo: sinon.stub(),
-            stats: sinon.stub(),
-            canHandleWebhook: sinon.stub(),
-            getScmContexts: sinon.stub(),
-            getDisplayName: sinon.stub()
-        };
-        initMock(gitlabScmMock, 'gitlab');
-        exampleScmMock = {
-            dummyFunction: sinon.stub(),
-            dummyRejectFunction: sinon.stub(),
-            addWebhook: sinon.stub(),
-            parseUrl: sinon.stub(),
-            parseHook: sinon.stub(),
-            getCheckoutCommand: sinon.stub(),
-            decorateUrl: sinon.stub(),
-            decorateCommit: sinon.stub(),
-            decorateAuthor: sinon.stub(),
-            getPermissions: sinon.stub(),
-            getCommitSha: sinon.stub(),
-            updateCommitStatus: sinon.stub(),
-            getFile: sinon.stub(),
-            getOpenedPRs: sinon.stub(),
-            getBellConfiguration: sinon.stub(),
-            getPrInfo: sinon.stub(),
-            stats: sinon.stub(),
-            canHandleWebhook: sinon.stub(),
-            getScmContexts: sinon.stub(),
-            getDisplayName: sinon.stub()
-        };
-        initMock(exampleScmMock, 'example');
+        gitlabScmMock = initMock('gitlab');
+        exampleScmMock = initMock('example');
 
         mockery.registerMock('screwdriver-scm-github', testScm(githubScmMock));
         mockery.registerMock('screwdriver-scm-gitlab', testScm(gitlabScmMock));
