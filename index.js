@@ -137,28 +137,16 @@ class ScmRouter extends Scm {
      * @return {Promise}                        combined callback results
      */
     allScm(callback) {
-        return new Promise((resolve, reject) => {
-            async.mapSeries(Object.keys(this.scms), (key, cb) => {
-                const scm = this.scms[key];
-
-                callback(scm)
-                    .then((ret) => {
-                        cb(null, ret);
-                    }, err => cb(err));
-            }, (err, results) => {
+        return Promise.all(Object.values(this.scms).map(scm => callback(scm)))
+            .then((results) => {
                 let map = {};
-
-                if (err) {
-                    reject(err);
-                }
 
                 results.forEach((result) => {
                     map = Object.assign(map, result);
                 });
 
-                resolve(map);
+                return map;
             });
-        });
     }
 
     /**
