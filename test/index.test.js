@@ -421,7 +421,7 @@ describe('index test', () => {
         const headers = { key: 'headers' };
         const payload = { key: 'payload' };
 
-        it('choose a webhookScm module', done =>
+        it('choose a webhookScm module', () =>
             scm.chooseWebhookScm(headers, payload)
                 .then(module => module.dummyFunction(headers, payload))
                 .then((result) => {
@@ -431,13 +431,9 @@ describe('index test', () => {
                     assert.calledOnce(exampleScmMock.dummyFunction);
                     assert.calledWith(exampleScmMock.dummyFunction, headers, payload);
                 })
-                .then(null, done())
-                .catch((err) => {
-                    done(err);
-                })
         );
 
-        it('reject when not registered appropriate scm plugin', (done) => {
+        it('reject when not registered appropriate scm plugin', () => {
             scm = new Scm({
                 scms: [
                     {
@@ -458,10 +454,6 @@ describe('index test', () => {
                     assert.notCalled(gitlabScmMock.dummyFunction);
                     assert.notCalled(exampleScmMock.dummyFunction);
                     assert.strictEqual(err, 'there is no suitable webhook module');
-                })
-                .then(null, done())
-                .catch((err) => {
-                    done(err);
                 });
         });
     });
@@ -478,8 +470,6 @@ describe('index test', () => {
                     assert.notCalled(gitlabScmMock.dummyFunction);
                     assert.calledOnce(exampleScmMock.dummyFunction);
                     assert.calledWith(exampleScmMock.dummyFunction, config);
-                }).catch((err) => {
-                    assert.fail(err);
                 })
         );
 
@@ -488,7 +478,7 @@ describe('index test', () => {
                 .then(module => module.dummyFunction())
                 .then(() => {
                     assert.fail();
-                }).catch((err) => {
+                }, (err) => {
                     assert.strictEqual(err, 'Not implemented');
                 })
         );
@@ -503,8 +493,6 @@ describe('index test', () => {
                     assert.notCalled(gitlabScmMock.dummyFunction);
                     assert.notCalled(exampleScmMock.dummyFunction);
                     assert.strictEqual(err, 'Not implemented');
-                }).catch((err) => {
-                    assert.fail(err);
                 })
         );
     });
@@ -523,8 +511,6 @@ describe('index test', () => {
                     assert.calledWith(exampleScmMock.getBellConfiguration, config);
                     assert.calledOnce(gitlabScmMock.getBellConfiguration);
                     assert.calledWith(gitlabScmMock.getBellConfiguration, config);
-                }).catch((err) => {
-                    assert.throws(new Error(err));
                 })
         );
 
@@ -536,8 +522,6 @@ describe('index test', () => {
                     assert.fail();
                 }, (err) => {
                     assert.equal(err, 'bell reject');
-                }).catch((err) => {
-                    assert.fail(err);
                 });
         });
     });
@@ -557,8 +541,6 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.addWebhook);
                     assert.calledOnce(exampleScm.addWebhook);
                     assert.calledWith(exampleScm.addWebhook, config);
-                }).catch((err) => {
-                    assert.fail(err);
                 });
         });
     });
@@ -578,8 +560,6 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.parseUrl);
                     assert.calledOnce(exampleScm.parseUrl);
                     assert.calledWith(exampleScm.parseUrl, config);
-                }).catch((err) => {
-                    assert.fail(err);
                 });
         });
     });
@@ -588,7 +568,7 @@ describe('index test', () => {
         const headers = { key: 'headers' };
         const payload = { key: 'payload' };
 
-        it('call origin parseHook', (done) => {
+        it('call origin parseHook', () => {
             const scmGithub = scm.scms['github.context'];
             const exampleScm = scm.scms['example.context'];
             const scmGitlab = scm.scms['gitlab.context'];
@@ -600,9 +580,6 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.parseHook);
                     assert.calledOnce(exampleScm.parseHook);
                     assert.calledWith(exampleScm.parseHook, headers, payload);
-                }, done())
-                .catch((err) => {
-                    assert.fail(err);
                 });
         });
     });
@@ -622,8 +599,6 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.getCheckoutCommand);
                     assert.calledOnce(exampleScm.getCheckoutCommand);
                     assert.calledWith(exampleScm.getCheckoutCommand, config);
-                }).catch((err) => {
-                    assert.fail(err);
                 });
         });
     });
@@ -643,8 +618,6 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.decorateUrl);
                     assert.calledOnce(exampleScm.decorateUrl);
                     assert.calledWith(exampleScm.decorateUrl, config);
-                }).catch((err) => {
-                    assert.fail(err);
                 });
         });
     });
@@ -664,8 +637,6 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.decorateCommit);
                     assert.calledOnce(exampleScm.decorateCommit);
                     assert.calledWith(exampleScm.decorateCommit, config);
-                }).catch((err) => {
-                    assert.fail(err);
                 });
         });
     });
@@ -685,8 +656,6 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.decorateAuthor);
                     assert.calledOnce(exampleScm.decorateAuthor);
                     assert.calledWith(exampleScm.decorateAuthor, config);
-                }).catch((err) => {
-                    assert.fail(err);
                 });
         });
     });
@@ -706,8 +675,6 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.getPermissions);
                     assert.calledOnce(exampleScm.getPermissions);
                     assert.calledWith(exampleScm.getPermissions, config);
-                }).catch((err) => {
-                    assert.fail(err);
                 });
         });
     });
@@ -727,8 +694,6 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.getCommitSha);
                     assert.calledOnce(exampleScm.getCommitSha);
                     assert.calledWith(exampleScm.getCommitSha, config);
-                }).catch((err) => {
-                    assert.fail(err);
                 });
         });
     });
@@ -748,8 +713,6 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.updateCommitStatus);
                     assert.calledOnce(exampleScm.updateCommitStatus);
                     assert.calledWith(exampleScm.updateCommitStatus, config);
-                }).catch((err) => {
-                    assert.fail(err);
                 });
         });
     });
@@ -769,8 +732,6 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.getFile);
                     assert.calledOnce(exampleScm.getFile);
                     assert.calledWith(exampleScm.getFile, config);
-                }).catch((err) => {
-                    assert.fail(err);
                 });
         });
     });
@@ -790,8 +751,6 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.getOpenedPRs);
                     assert.calledOnce(exampleScm.getOpenedPRs);
                     assert.calledWith(exampleScm.getOpenedPRs, config);
-                }).catch((err) => {
-                    assert.throws(new Error(err));
                 });
         });
     });
@@ -810,8 +769,6 @@ describe('index test', () => {
                     assert.calledOnce(scmGithub.getBellConfiguration);
                     assert.calledOnce(exampleScm.getBellConfiguration);
                     assert.calledOnce(scmGitlab.getBellConfiguration);
-                }).catch((err) => {
-                    assert.throws(new Error(err));
                 });
         });
     });
@@ -831,8 +788,6 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.getPrInfo);
                     assert.calledOnce(exampleScm.getPrInfo);
                     assert.calledWith(exampleScm.getPrInfo, config);
-                }).catch((err) => {
-                    assert.fail(err);
                 });
         });
     });
@@ -871,7 +826,7 @@ describe('index test', () => {
         const headers = { somekey: 'somevalue' };
         const payload = { hogekey: 'hogevalue' };
 
-        it('call origin canHandleWebhook', (done) => {
+        it('call origin canHandleWebhook', () => {
             const scmGithub = scm.scms['github.context'];
             const exampleScm = scm.scms['example.context'];
             const scmGitlab = scm.scms['gitlab.context'];
@@ -884,9 +839,6 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.canHandleWebhook);
                     assert.called(exampleScm.canHandleWebhook);
                     assert.calledWith(exampleScm.canHandleWebhook, headers, payload);
-                }, done())
-                .catch((err) => {
-                    assert.fail(err);
                 });
         });
     });
