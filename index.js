@@ -4,8 +4,6 @@ const Scm = require('screwdriver-scm-base');
 const async = require('async');
 const hoek = require('hoek');
 
-process.on('unhandledRejection', console.dir);
-
 class ScmRouter extends Scm {
     /**
      * Constructs a router for different scm strategies
