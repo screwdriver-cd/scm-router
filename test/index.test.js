@@ -253,8 +253,8 @@ describe('index test', () => {
             const exampleScm = scm.scms['example.context'];
             const scmGitlab = scm.scms['gitlab.context'];
 
-            assert.strictEqual(scmGithub, undefined);
-            assert.strictEqual(scmGitlab, undefined);
+            assert.isUndefined(scmGithub);
+            assert.isUndefined(scmGitlab);
             assert.deepEqual(exampleScm.constructorParams, exampleOptions);
         });
 
@@ -281,8 +281,8 @@ describe('index test', () => {
             const exampleScm = scm.scms['example.context'];
             const scmGitlab = scm.scms['gitlab.context'];
 
-            assert.strictEqual(scmGithub, undefined);
-            assert.strictEqual(scmGitlab, undefined);
+            assert.isUndefined(scmGithub);
+            assert.isUndefined(scmGitlab);
             assert.deepEqual(exampleScm.constructorParams, exampleOptions);
         });
 
@@ -307,8 +307,8 @@ describe('index test', () => {
             const exampleScm = scm.scms['example.context'];
             const scmGitlab = scm.scms['gitlab.context'];
 
-            assert.strictEqual(scmGithub, undefined);
-            assert.strictEqual(scmGitlab, undefined);
+            assert.isUndefined(scmGithub);
+            assert.isUndefined(scmGitlab);
             assert.deepEqual(exampleScm.constructorParams, exampleOptions);
         });
 
@@ -403,8 +403,8 @@ describe('index test', () => {
             const scmGitlab = scm.scms['gitlab.context'];
 
             assert.deepEqual(scmGithub.constructorParams, githubOptions);
-            assert.strictEqual(scmGitlab, undefined);
-            assert.strictEqual(exampleScm, undefined);
+            assert.isUndefined(scmGitlab);
+            assert.isUndefined(exampleScm);
         });
 
         it('does not throw an error when npm module return empty scmContext', () => {
@@ -424,8 +424,8 @@ describe('index test', () => {
             const scmGitlab = scm.scms['gitlab.context'];
 
             assert.deepEqual(scmGithub.constructorParams, githubOptions);
-            assert.strictEqual(scmGitlab, undefined);
-            assert.strictEqual(exampleScm, undefined);
+            assert.isUndefined(scmGitlab);
+            assert.isUndefined(exampleScm);
         });
 
         it('does not throw an error and overwrite when duplicate scm plugins', () => {
@@ -452,8 +452,8 @@ describe('index test', () => {
             const scmGitlab = scm.scms['gitlab.context'];
 
             assert.deepEqual(scmGithub.constructorParams, githubOptions);
-            assert.strictEqual(scmGitlab, undefined);
-            assert.strictEqual(exampleScm, undefined);
+            assert.isUndefined(scmGitlab);
+            assert.isUndefined(exampleScm);
         });
     });
 
