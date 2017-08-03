@@ -132,35 +132,19 @@ describe('index test', () => {
         });
 
         it('throws an error when config does not exist', () => {
-            const error = new Error('No scm config passed in.');
-
-            try {
+            assert.throws(() => {
                 scm = new Scm();
-            } catch (err) {
-                assert.strictEqual(err.message, error.message);
-
-                return;
-            }
-            assert.fail();
+            }, Error, 'No scm config passed in.');
         });
 
         it('throws an error when the scms config does not exist', () => {
-            const error = new Error('No scm config passed in.');
-
-            try {
+            assert.throws(() => {
                 scm = new Scm({ ecosystem });
-            } catch (err) {
-                assert.strictEqual(err.message, error.message);
-
-                return;
-            }
-            assert.fail();
+            }, Error, 'No scm config passed in.');
         });
 
         it('throws an error when the scms config is not an array', () => {
-            const error = new Error('No scm config passed in.');
-
-            try {
+            assert.throws(() => {
                 scm = new Scm({
                     ecosystem,
                     scms: {
@@ -168,34 +152,20 @@ describe('index test', () => {
                         config: githubPluginOptions
                     }
                 });
-            } catch (err) {
-                assert.strictEqual(err.message, error.message);
-
-                return;
-            }
-            assert.fail();
+            }, Error, 'No scm config passed in.');
         });
 
         it('throws an error when the scms config is an empty array', () => {
-            const error = new Error('No scm config passed in.');
-
-            try {
+            assert.throws(() => {
                 scm = new Scm({
                     ecosystem,
                     scms: []
                 });
-            } catch (err) {
-                assert.strictEqual(err.message, error.message);
-
-                return;
-            }
-            assert.fail();
+            }, Error, 'No scm config passed in.');
         });
 
         it('throws an error when the displayName config does not exist', () => {
-            const error = new Error('Display name not specified for github scm plugin');
-
-            try {
+            assert.throws(() => {
                 scm = new Scm({
                     ecosystem,
                     scms: [{
@@ -203,18 +173,11 @@ describe('index test', () => {
                         config: {}
                     }]
                 });
-            } catch (err) {
-                assert.strictEqual(err.message, error.message);
-
-                return;
-            }
-            assert.fail();
+            }, Error, 'Display name not specified for github scm plugin');
         });
 
         it('throw an error when a npm module cannot be registered', () => {
-            const error = new Error('Cannot find module \'screwdriver-scm-DNE\'');
-
-            try {
+            assert.throws(() => {
                 scm = new Scm({
                     ecosystem,
                     scms: [{
@@ -228,12 +191,7 @@ describe('index test', () => {
                         config: examplePluginOptions
                     }]
                 });
-            } catch (err) {
-                assert.equal(err.message, error.message);
-
-                return;
-            }
-            assert.fail();
+            }, Error, 'Cannot find module \'screwdriver-scm-DNE\'');
         });
 
         it('registers multiple plugins', () => {
@@ -247,17 +205,13 @@ describe('index test', () => {
         });
 
         it('registers a single plugin', () => {
-            try {
-                scm = new Scm({
-                    ecosystem,
-                    scms: [{
-                        plugin: 'example',
-                        config: examplePluginOptions
-                    }]
-                });
-            } catch (err) {
-                assert.fail(err);
-            }
+            scm = new Scm({
+                ecosystem,
+                scms: [{
+                    plugin: 'example',
+                    config: examplePluginOptions
+                }]
+            });
 
             const exampleScm = scm.scms['example.context'];
 
@@ -266,7 +220,7 @@ describe('index test', () => {
 
         it('does not throw an error and skip when npm module return empty scmContext', () => {
             githubScmMock.getScmContexts.returns(['']);
-            try {
+            assert.doesNotThrow(() => {
                 scm = new Scm({
                     ecosystem,
                     scms: [{
@@ -281,9 +235,7 @@ describe('index test', () => {
                         config: examplePluginOptions
                     }]
                 });
-            } catch (err) {
-                assert.fail(err);
-            }
+            });
 
             const scmGithub = scm.scms['github.context'];
             const exampleScm = scm.scms['example.context'];
@@ -295,7 +247,7 @@ describe('index test', () => {
         });
 
         it('does not throw an error and not overwrited when duplicate scm plugins', () => {
-            try {
+            assert.doesNotThrow(() => {
                 scm = new Scm({
                     ecosystem,
                     scms: [{
@@ -309,9 +261,7 @@ describe('index test', () => {
                         }
                     }]
                 });
-            } catch (err) {
-                assert.fail(err);
-            }
+            });
 
             const scmGithub = scm.scms['github.context'];
             const exampleScm = scm.scms['example.context'];
@@ -324,9 +274,7 @@ describe('index test', () => {
 
         it('throw an error when not registered all scm plugins', () => {
             githubScmMock.getScmContexts.returns(['']);
-            const error = new Error('No scm config passed in.');
-
-            try {
+            assert.throws(() => {
                 scm = new Scm({
                     ecosystem,
                     scms: [{
@@ -342,12 +290,7 @@ describe('index test', () => {
                         }
                     }]
                 });
-            } catch (err) {
-                assert.strictEqual(err.message, error.message);
-
-                return;
-            }
-            assert.fail();
+            }, Error, 'No scm config passed in.');
         });
     });
 
@@ -380,11 +323,7 @@ describe('index test', () => {
                 examplePluginOptions
             );
 
-            try {
-                scm.loadPlugin('example', config);
-            } catch (err) {
-                assert.fail(err);
-            }
+            scm.loadPlugin('example', config);
 
             const scmGithub = scm.scms['github.context'];
             const exampleScm = scm.scms['example.context'];
@@ -394,23 +333,18 @@ describe('index test', () => {
         });
 
         it('throw an error when a npm module cannot be registered', () => {
-            const error = new Error('Cannot find module \'screwdriver-scm-DNE\'');
             const config = Object.assign(
                 { ecosystem },
                 { displayName: 'DNE.com' }
             );
 
-            try {
+            assert.throws(() => {
                 scm.loadPlugin('DNE', config);
-            } catch (err) {
-                const scmGithub = scm.scms['github.context'];
+            }, Error, 'Cannot find module \'screwdriver-scm-DNE\'');
 
-                assert.equal(err.message, error.message);
-                assert.deepEqual(scmGithub.constructorParams, githubOptions);
+            const scmGithub = scm.scms['github.context'];
 
-                return;
-            }
-            assert.fail();
+            assert.deepEqual(scmGithub.constructorParams, githubOptions);
         });
 
         it('does not throw an error when scm-router plugin be specified for scms setting', () => {
@@ -420,11 +354,9 @@ describe('index test', () => {
                 examplePluginOptions
             );
 
-            try {
+            assert.doesNotThrow(() => {
                 scm.loadPlugin('router', config);
-            } catch (err) {
-                assert.fail(err);
-            }
+            });
 
             const scmGithub = scm.scms['github.context'];
             const exampleScm = scm.scms['example.context'];
@@ -443,11 +375,9 @@ describe('index test', () => {
                 examplePluginOptions
             );
 
-            try {
+            assert.doesNotThrow(() => {
                 scm.loadPlugin('example', config);
-            } catch (err) {
-                assert.fail(err);
-            }
+            });
 
             const scmGithub = scm.scms['github.context'];
             const exampleScm = scm.scms['example.context'];
@@ -472,12 +402,10 @@ describe('index test', () => {
                 githubPluginOptions
             );
 
-            try {
+            assert.doesNotThrow(() => {
                 scm.loadPlugin('github', configDummy);
                 scm.loadPlugin('github', config);
-            } catch (err) {
-                assert.fail(err);
-            }
+            });
 
             const scmGithub = scm.scms['github.context'];
             const exampleScm = scm.scms['example.context'];
