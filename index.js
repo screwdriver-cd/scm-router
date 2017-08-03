@@ -32,8 +32,7 @@ class ScmRouter extends Scm {
             }
             scmsConfig.forEach((scm) => {
                 if (scm.config.displayName && typeof scm.config.displayName === 'string') {
-                    const options = hoek.applyToDefaults({ ecosystem },
-                        (scm.config || {}));  // Add ecosystem to scm options
+                    const options = hoek.applyToDefaults({ ecosystem }, scm.config);  // Add ecosystem to scm options
 
                     this.loadPlugin(scm.plugin, options);
                 } else {
