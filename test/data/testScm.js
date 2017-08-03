@@ -2,26 +2,29 @@
 
 const ScmBase = require('screwdriver-scm-base');
 
-module.exports = (stubsMap) => {
-    /**
-     * Generic scm class for testing
-     * @type {Class}
-     */
-    const TestScmClass = class TestScm extends ScmBase {
-        constructor(options) {
-            super();
+module.exports = {
+    getBaseClass: () => ScmBase,
+    createMock: (stubsMap) => {
+        /**
+         * Generic scm class for testing
+         * @type {Class}
+         */
+        const TestScmClass = class TestScm extends ScmBase {
+            constructor(options) {
+                super();
 
-            this.options = options;
+                this.options = options;
 
-            Object.keys(stubsMap).forEach((key) => {
-                this[key] = stubsMap[key];
-            });
-        }
+                Object.keys(stubsMap).forEach((key) => {
+                    this[key] = stubsMap[key];
+                });
+            }
 
-        get constructorParams() {
-            return this.options;
-        }
-    };
+            get constructorParams() {
+                return this.options;
+            }
+        };
 
-    return TestScmClass;
+        return TestScmClass;
+    }
 };

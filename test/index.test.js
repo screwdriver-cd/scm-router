@@ -81,9 +81,10 @@ describe('index test', () => {
         gitlabScmMock = initMock('gitlab');
         exampleScmMock = initMock('example');
 
-        mockery.registerMock('screwdriver-scm-github', testScm(githubScmMock));
-        mockery.registerMock('screwdriver-scm-gitlab', testScm(gitlabScmMock));
-        mockery.registerMock('screwdriver-scm-example', testScm(exampleScmMock));
+        mockery.registerMock('screwdriver-scm-base', testScm.getBaseClass());
+        mockery.registerMock('screwdriver-scm-github', testScm.createMock(githubScmMock));
+        mockery.registerMock('screwdriver-scm-gitlab', testScm.createMock(gitlabScmMock));
+        mockery.registerMock('screwdriver-scm-example', testScm.createMock(exampleScmMock));
 
         // eslint-disable-next-line global-require
         Scm = require('../index');

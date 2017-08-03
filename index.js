@@ -97,10 +97,10 @@ class ScmRouter extends Scm {
                     });
             }, (ret) => {
                 if (ret === null) {
-                    reject(new Error('there is no suitable webhook module'));
+                    return reject(new Error('there is no suitable webhook module'));
                 }
 
-                resolve(ret);
+                return resolve(ret);
             });
         });
     }
@@ -117,14 +117,12 @@ class ScmRouter extends Scm {
             if (config && typeof config.scmContext === 'string') {
                 const scm = this.scms[config.scmContext];
 
-                if (typeof scm !== 'object') {
-                    reject(new Error('Not implemented'));
+                if (scm && scm instanceof Scm) {
+                    return resolve(scm);
                 }
-
-                resolve(scm);
-            } else {
-                reject(new Error('Not implemented'));
             }
+
+            return reject(new Error('Not implemented'));
         });
     }
 
