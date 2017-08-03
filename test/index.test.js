@@ -493,7 +493,7 @@ describe('index test', () => {
                     assert.notCalled(githubScmMock.dummyFunction);
                     assert.notCalled(gitlabScmMock.dummyFunction);
                     assert.notCalled(exampleScmMock.dummyFunction);
-                    assert.strictEqual(err, 'there is no suitable webhook module');
+                    assert.deepEqual(err, new Error('there is no suitable webhook module'));
                 });
         });
     });
@@ -519,7 +519,7 @@ describe('index test', () => {
                 .then(() => {
                     assert.fail();
                 }, (err) => {
-                    assert.strictEqual(err, 'Not implemented');
+                    assert.deepEqual(err, new Error('Not implemented'));
                 })
         );
 
@@ -532,7 +532,7 @@ describe('index test', () => {
                     assert.notCalled(githubScmMock.dummyFunction);
                     assert.notCalled(gitlabScmMock.dummyFunction);
                     assert.notCalled(exampleScmMock.dummyFunction);
-                    assert.strictEqual(err, 'Not implemented');
+                    assert.deepEqual(err, new Error('Not implemented'));
                 })
         );
     });
