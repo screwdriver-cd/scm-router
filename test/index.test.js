@@ -253,8 +253,8 @@ describe('index test', () => {
             const exampleScm = scm.scms['example.context'];
             const scmGitlab = scm.scms['gitlab.context'];
 
-            assert.equal(scmGithub, null);
-            assert.equal(scmGitlab, null);
+            assert.strictEqual(scmGithub, undefined);
+            assert.strictEqual(scmGitlab, undefined);
             assert.deepEqual(exampleScm.constructorParams, exampleOptions);
         });
 
@@ -281,8 +281,8 @@ describe('index test', () => {
             const exampleScm = scm.scms['example.context'];
             const scmGitlab = scm.scms['gitlab.context'];
 
-            assert.equal(scmGithub, null);
-            assert.equal(scmGitlab, null);
+            assert.strictEqual(scmGithub, undefined);
+            assert.strictEqual(scmGitlab, undefined);
             assert.deepEqual(exampleScm.constructorParams, exampleOptions);
         });
 
@@ -307,8 +307,8 @@ describe('index test', () => {
             const exampleScm = scm.scms['example.context'];
             const scmGitlab = scm.scms['gitlab.context'];
 
-            assert.equal(scmGithub, null);
-            assert.equal(scmGitlab, null);
+            assert.strictEqual(scmGithub, undefined);
+            assert.strictEqual(scmGitlab, undefined);
             assert.deepEqual(exampleScm.constructorParams, exampleOptions);
         });
 
@@ -403,8 +403,8 @@ describe('index test', () => {
             const scmGitlab = scm.scms['gitlab.context'];
 
             assert.deepEqual(scmGithub.constructorParams, githubOptions);
-            assert.equal(scmGitlab, null);
-            assert.equal(exampleScm, null);
+            assert.strictEqual(scmGitlab, undefined);
+            assert.strictEqual(exampleScm, undefined);
         });
 
         it('does not throw an error when npm module return empty scmContext', () => {
@@ -424,8 +424,8 @@ describe('index test', () => {
             const scmGitlab = scm.scms['gitlab.context'];
 
             assert.deepEqual(scmGithub.constructorParams, githubOptions);
-            assert.equal(scmGitlab, null);
-            assert.equal(exampleScm, null);
+            assert.strictEqual(scmGitlab, undefined);
+            assert.strictEqual(exampleScm, undefined);
         });
 
         it('does not throw an error and overwrite when duplicate scm plugins', () => {
@@ -452,8 +452,8 @@ describe('index test', () => {
             const scmGitlab = scm.scms['gitlab.context'];
 
             assert.deepEqual(scmGithub.constructorParams, githubOptions);
-            assert.equal(scmGitlab, null);
-            assert.equal(exampleScm, null);
+            assert.strictEqual(scmGitlab, undefined);
+            assert.strictEqual(exampleScm, undefined);
         });
     });
 
@@ -555,13 +555,13 @@ describe('index test', () => {
         );
 
         it('reject when origin 1st scm plugin rejects', () => {
-            githubScmMock.getBellConfiguration.rejects('bell reject');
+            githubScmMock.getBellConfiguration.rejects('bellreject');
 
             return scm.allScm(module => module.getBellConfiguration())
                 .then(() => {
                     assert.fail();
                 }, (err) => {
-                    assert.equal(err, 'bell reject');
+                    assert.strictEqual(err.name, 'bellreject');
                 });
         });
     });
