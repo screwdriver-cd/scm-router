@@ -31,7 +31,7 @@ class ScmRouter extends Scm {
                 throw new Error('No scm config passed in.');
             }
             scmsConfig.forEach((scm) => {
-                if (scm.config.displayName && typeof scm.config.displayName === 'string') {
+                if (typeof scm.config === 'object' && typeof scm.config.displayName === 'string') {
                     const options = hoek.applyToDefaults({ ecosystem }, scm.config);  // Add ecosystem to scm options
 
                     this.loadPlugin(scm.plugin, options);
@@ -116,7 +116,7 @@ class ScmRouter extends Scm {
      */
     chooseScm(config) {
         return new Promise((resolve, reject) => {
-            if (config.scmContext && typeof config.scmContext === 'string') {
+            if (config && typeof config.scmContext === 'string') {
                 const scm = this.scms[config.scmContext];
 
                 if (typeof scm !== 'object') {

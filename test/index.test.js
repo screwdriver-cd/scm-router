@@ -176,6 +176,18 @@ describe('index test', () => {
             }, Error, 'Display name not specified for github scm plugin');
         });
 
+        it('throws an error when the config is not a map', () => {
+            assert.throws(() => {
+                scm = new Scm({
+                    ecosystem,
+                    scms: [{
+                        plugin: 'github',
+                        config: 'config'
+                    }]
+                });
+            }, Error, 'Display name not specified for github scm plugin');
+        });
+
         it('throw an error when a npm module cannot be registered', () => {
             assert.throws(() => {
                 scm = new Scm({
@@ -220,6 +232,34 @@ describe('index test', () => {
 
         it('does not throw an error and skip when npm module return empty scmContext', () => {
             githubScmMock.getScmContexts.returns(['']);
+            assert.doesNotThrow(() => {
+                scm = new Scm({
+                    ecosystem,
+                    scms: [{
+                        plugin: 'github',
+                        config: {
+                            githubPluginOptions,
+                            displayName: 'github.com'
+                        }
+                    },
+                    {
+                        plugin: 'example',
+                        config: examplePluginOptions
+                    }]
+                });
+            });
+
+            const scmGithub = scm.scms['github.context'];
+            const exampleScm = scm.scms['example.context'];
+            const scmGitlab = scm.scms['gitlab.context'];
+
+            assert.equal(scmGithub, null);
+            assert.equal(scmGitlab, null);
+            assert.deepEqual(exampleScm.constructorParams, exampleOptions);
+        });
+
+        it('does not throw an error and skip when getScmContexts return is not a string', () => {
+            githubScmMock.getScmContexts.returns([{ somekey: 'github.context' }]);
             assert.doesNotThrow(() => {
                 scm = new Scm({
                     ecosystem,
