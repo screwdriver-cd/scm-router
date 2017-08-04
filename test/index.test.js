@@ -525,7 +525,7 @@ describe('index test', () => {
         );
 
         it('reject when not registered appropriate scm plugin', () =>
-            scm.chooseScm({ scmContext: 'hoge.cotext' })
+            scm.chooseScm({ scmContext: 'hoge.context' })
                 .then(module => module.dummyFunction())
                 .then(() => {
                     assert.fail();
