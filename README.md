@@ -3,7 +3,7 @@
 
 > A generic scm plugin that routes builds to a specified scm
 
-A scm is interface for interacting with a source control management system.
+An SCM is a source control management system, like Github, Bitbucket, Gitlab, etc. This SCM Router module will allow multiple SCMs to be used within a single Screwdriver cluster.
 
 i.e. Github, Bitbucket, Gitlab
 

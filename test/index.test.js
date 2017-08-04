@@ -189,8 +189,8 @@ describe('index test', () => {
             }, Error, 'Display name not specified for github scm plugin');
         });
 
-        it('throw an error when a npm module cannot be registered', () => {
-            assert.throws(() => {
+        it('does not throw an error when a npm module cannot be registered', () => {
+            assert.doesNotThrow(() => {
                 scm = new Scm({
                     ecosystem,
                     scms: [{
@@ -204,7 +204,7 @@ describe('index test', () => {
                         config: examplePluginOptions
                     }]
                 });
-            }, Error, 'Cannot find module \'screwdriver-scm-DNE\'');
+            });
         });
 
         it('registers multiple plugins', () => {
@@ -373,15 +373,15 @@ describe('index test', () => {
             assert.deepEqual(exampleScm.constructorParams, exampleOptions);
         });
 
-        it('throw an error when a npm module cannot be registered', () => {
+        it('does not throw an error when a npm module cannot be registered', () => {
             const config = Object.assign(
                 { ecosystem },
                 { displayName: 'DNE.com' }
             );
 
-            assert.throws(() => {
+            assert.doesNotThrow(() => {
                 scm.loadPlugin('DNE', config);
-            }, Error, 'Cannot find module \'screwdriver-scm-DNE\'');
+            });
 
             const scmGithub = scm.scms['github.context'];
 
@@ -867,19 +867,31 @@ describe('index test', () => {
         const headers = { somekey: 'somevalue' };
         const payload = { hogekey: 'hogevalue' };
 
-        it('call origin canHandleWebhook', () => {
-            const scmGithub = scm.scms['github.context'];
+        it('returns true when desired scm found', () => {
             const exampleScm = scm.scms['example.context'];
-            const scmGitlab = scm.scms['gitlab.context'];
 
             return scm._canHandleWebhook(headers, payload)
                 .then((result) => {
                     assert.strictEqual(result, true);
-                    assert.called(scmGithub.canHandleWebhook);
-                    assert.calledWith(scmGithub.canHandleWebhook, headers, payload);
-                    assert.notCalled(scmGitlab.canHandleWebhook);
-                    assert.called(exampleScm.canHandleWebhook);
-                    assert.calledWith(exampleScm.canHandleWebhook, headers, payload);
+                    assert.calledOnce(exampleScm.canHandleWebhook);
+                });
+        });
+
+        it('returns true when desired scm not found', () => {
+            const scmGithub = scm.scms['github.context'];
+            const exampleScm = scm.scms['example.context'];
+            const scmGitlab = scm.scms['gitlab.context'];
+
+            scmGithub.canHandleWebhook.resolves(false);
+            exampleScm.canHandleWebhook.resolves(false);
+            scmGitlab.canHandleWebhook.resolves(false);
+
+            return scm._canHandleWebhook(headers, payload)
+                .then((result) => {
+                    assert.strictEqual(result, false);
+                    assert.calledOnce(scmGithub.canHandleWebhook);
+                    assert.calledOnce(exampleScm.canHandleWebhook);
+                    assert.calledOnce(scmGitlab.canHandleWebhook);
                 });
         });
     });

@@ -10,7 +10,7 @@ class ScmRouter extends Scm {
      * @method constructor
      * @param  {Object}         config                             Object with scms and ecosystem
      * @param  {Object}         [config.ecosystem]                 Optional object with ecosystem values
-     * @param  {Object}         config.scms                        Array of scms to load or a single scm object
+     * @param  {Array}          config.scms                        Array of scms to load
      * @param  {String}         config.scms[x].plugin              Name of the scm NPM module to load
      * @param  {String}         config.scms[x].config              Configuration to construct the module with
      * @param  {String}         config.scms[x].config.displayName  Nickname to displaoy of the scm
@@ -57,8 +57,17 @@ class ScmRouter extends Scm {
             return;
         }
 
-        // eslint-disable-next-line global-require, import/no-dynamic-require
-        const ScmPlugin = require(`screwdriver-scm-${plugin}`);
+        let ScmPlugin;
+
+        try {
+            // eslint-disable-next-line global-require, import/no-dynamic-require
+            ScmPlugin = require(`screwdriver-scm-${plugin}`);
+        } catch (e) {
+            console.warn(`Scm plugin ${plugin} is not supported`);
+
+            return;
+        }
+
         const scmPlugin = new ScmPlugin(options);
         const scmContexts = scmPlugin.getScmContexts();
         const scmContext = scmContexts[0]; // plugins return only one scmContext
@@ -88,7 +97,7 @@ class ScmRouter extends Scm {
     chooseWebhookScm(headers, payload) {
         return new Promise((resolve, reject) => {
             // choose a webhook scm module, or null if there is no suitable one
-            async.detectSeries(this.scms, (scm, cb) => {
+            async.detect(this.scms, (scm, cb) => {
                 scm.canHandleWebhook(headers, payload)
                     .then((result) => {
                         cb(result === false ? null : scm);
@@ -330,7 +339,8 @@ class ScmRouter extends Scm {
      */
     _canHandleWebhook(headers, payload) {
         return this.chooseWebhookScm(headers, payload)
-            .then(scm => scm.canHandleWebhook(headers, payload));
+            .then(scm => !!scm)
+            .catch(() => false);
     }
 
     /**
