@@ -22,15 +22,16 @@ It will initialize any routers specified in the [default.yaml](https://github.co
 **Example scm yaml section:**
 ```
 scms:
-    - plugin: github
-      config:
-        oauthClientId: YOU-PROBABLY-WANT-SOMETHING-HERE
-        ......
-    - plugin: bitbucket
-      config:
-        displayName: YOUR-BITBUCKET-DISPLAY-NAME
-        oauthClientId: YOUR-BITBUCKET-OAUTH-CLIENT-ID
-        ......
+    githubDisplayName:
+        plugin: github
+        config:
+            oauthClientId: YOU-PROBABLY-WANT-SOMETHING-HERE
+            ......
+    bitbucketDisplayName:
+        plugin: bitbucket
+        config:
+            oauthClientId: YOUR-BITBUCKET-OAUTH-CLIENT-ID
+            ......
 ```
 
 ## Testing

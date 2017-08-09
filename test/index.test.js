@@ -16,12 +16,7 @@ describe('index test', () => {
     let githubScmMock;
     let gitlabScmMock;
     let exampleScmMock;
-    const ecosystem = {
-        api: 'http://api.com',
-        store: 'http://store.com'
-    };
     const githubPluginOptions = {
-        displayName: 'github.com',
         oauthClientId: 'OAUTH_CLIENT_ID',
         oauthClientSecret: 'OAUTH_CLIENT_SECRET',
         username: 'USERNAME',
@@ -30,11 +25,9 @@ describe('index test', () => {
         privateRepo: false
     };
     const gitlabPluginOptions = {
-        displayName: 'gitlab.com',
         privateRepo: true
     };
     const examplePluginOptions = {
-        displayName: 'example.com',
         somekey: 'somevalue'
     };
     const initMock = (plugin) => {
@@ -90,21 +83,20 @@ describe('index test', () => {
         Scm = require('../index');
 
         scm = new Scm({
-            ecosystem,
-            scms: [
-                {
+            scms: {
+                'github.com': {
                     plugin: 'github',
                     config: githubPluginOptions
                 },
-                {
+                'example.com': {
                     plugin: 'example',
                     config: examplePluginOptions
                 },
-                {
+                'gitlab.com': {
                     plugin: 'gitlab',
                     config: gitlabPluginOptions
                 }
-            ]
+            }
         });
     });
 
@@ -116,19 +108,31 @@ describe('index test', () => {
         let githubOptions;
         let exampleOptions;
         let gitlabOptions;
+        let expectedGithubOptions;
+        let expectedExampleOptions;
+        let expectedGitlabOptions;
 
         beforeEach(() => {
             githubOptions = Object.assign(
-                { ecosystem },
                 githubPluginOptions
             );
             exampleOptions = Object.assign(
-                { ecosystem },
                 examplePluginOptions
             );
             gitlabOptions = Object.assign(
-                { ecosystem },
                 gitlabPluginOptions
+            );
+            expectedGithubOptions = Object.assign(
+                githubOptions,
+                { displayName: 'github.com' }
+            );
+            expectedExampleOptions = Object.assign(
+                exampleOptions,
+                { displayName: 'example.com' }
+            );
+            expectedGitlabOptions = Object.assign(
+                gitlabOptions,
+                { displayName: 'gitlab.com' }
             );
         });
 
@@ -138,71 +142,92 @@ describe('index test', () => {
             }, Error, 'No scm config passed in.');
         });
 
-        it('throws an error when the scms config does not exist', () => {
-            assert.throws(() => {
-                scm = new Scm({ ecosystem });
-            }, Error, 'No scm config passed in.');
+        it('does not throws an error when the scm.config does not exist', () => {
+            assert.doesNotThrow(() => {
+                scm = new Scm({
+                    scms: {
+                        'github.com': {
+                            plugin: 'github'
+                        }
+                    }
+                });
+            });
         });
 
-        it('throws an error when the scms config is not an array', () => {
+        it('throws an error when the scm config not a map', () => {
             assert.throws(() => {
                 scm = new Scm({
-                    ecosystem,
                     scms: {
-                        plugin: 'github',
-                        config: githubPluginOptions
+                        'github.com': 'value'
                     }
                 });
             }, Error, 'No scm config passed in.');
         });
 
-        it('throws an error when the scms config is an empty array', () => {
+        it('throws an error when the scms config is an empty map', () => {
             assert.throws(() => {
                 scm = new Scm({
-                    ecosystem,
-                    scms: []
+                    scms: {}
                 });
             }, Error, 'No scm config passed in.');
         });
 
-        it('throws an error when the displayName config does not exist', () => {
-            assert.throws(() => {
+        it('does not throws an error when the config is an empty map', () => {
+            assert.doesNotThrow(() => {
                 scm = new Scm({
-                    ecosystem,
-                    scms: [{
-                        plugin: 'github',
-                        config: {}
-                    }]
+                    scms: {
+                        'github.com': {
+                            plugin: 'github',
+                            config: {}
+                        }
+                    }
                 });
-            }, Error, 'Display name not specified for github scm plugin');
+            });
         });
 
         it('throws an error when the config is not a map', () => {
             assert.throws(() => {
                 scm = new Scm({
-                    ecosystem,
-                    scms: [{
-                        plugin: 'github',
-                        config: 'config'
-                    }]
+                    scms: {
+                        'github.com': {
+                            plugin: 'github',
+                            config: 'config'
+                        }
+                    }
                 });
-            }, Error, 'Display name not specified for github scm plugin');
+            }, Error, 'No scm config passed in.');
         });
 
         it('does not throw an error when a npm module cannot be registered', () => {
             assert.doesNotThrow(() => {
                 scm = new Scm({
-                    ecosystem,
-                    scms: [{
-                        plugin: 'DNE',
-                        config: {
-                            displayName: 'DNE.com'
+                    scms: {
+                        'DNE.com': {
+                            plugin: 'DNE',
+                            config: {}
+                        },
+                        'example.com': {
+                            plugin: 'example',
+                            config: examplePluginOptions
                         }
-                    },
-                    {
-                        plugin: 'example',
-                        config: examplePluginOptions
-                    }]
+                    }
+                });
+            });
+        });
+
+        it('does not throw an error when a module of scm-router module', () => {
+            assert.doesNotThrow(() => {
+                scm = new Scm({
+                    scms: {
+                        'router.com': {
+                            plugin: 'router',
+                            config: {}
+                        },
+                        'example.com': {
+                            plugin: 'example',
+                            config: examplePluginOptions
+                        }
+                    }
                 });
             });
         });
@@ -212,14 +237,13 @@ describe('index test', () => {
             const exampleScm = scm.scms['example.context'];
             const scmGitlab = scm.scms['gitlab.context'];
 
-            assert.deepEqual(scmGithub.constructorParams, githubOptions);
-            assert.deepEqual(exampleScm.constructorParams, exampleOptions);
-            assert.deepEqual(scmGitlab.constructorParams, gitlabOptions);
+            assert.deepEqual(scmGithub.constructorParams, expectedGithubOptions);
+            assert.deepEqual(exampleScm.constructorParams, expectedExampleOptions);
+            assert.deepEqual(scmGitlab.constructorParams, expectedGitlabOptions);
         });
 
         it('registers a single plugin', () => {
             scm = new Scm({
-                ecosystem,
                 scms: [{
                     plugin: 'example',
                     config: examplePluginOptions
@@ -228,25 +252,23 @@ describe('index test', () => {
 
             const exampleScm = scm.scms['example.context'];
 
-            assert.deepEqual(exampleScm.constructorParams, exampleOptions);
+            assert.deepEqual(exampleScm.constructorParams, expectedExampleOptions);
         });
 
         it('does not throw an error and skip when npm module return empty scmContext', () => {
             githubScmMock.getScmContexts.returns(['']);
             assert.doesNotThrow(() => {
                 scm = new Scm({
-                    ecosystem,
-                    scms: [{
-                        plugin: 'github',
-                        config: {
-                            githubPluginOptions,
-                            displayName: 'github.com'
+                    scms: {
+                        'github.com': {
+                            plugin: 'github',
+                            config: githubPluginOptions
+                        },
+                        'example.com': {
+                            plugin: 'example',
+                            config: examplePluginOptions
                         }
-                    },
-                    {
-                        plugin: 'example',
-                        config: examplePluginOptions
-                    }]
+                    }
                 });
             });
 
@@ -256,25 +278,24 @@ describe('index test', () => {
 
             assert.isUndefined(scmGithub);
             assert.isUndefined(scmGitlab);
-            assert.deepEqual(exampleScm.constructorParams, exampleOptions);
+            assert.deepEqual(exampleScm.constructorParams,
+                Object.assign(exampleOptions, { displayName: 'example.com' }));
         });
 
         it('does not throw an error and skip when getScmContexts return is not a string', () => {
             githubScmMock.getScmContexts.returns([{ somekey: 'github.context' }]);
             assert.doesNotThrow(() => {
                 scm = new Scm({
-                    ecosystem,
-                    scms: [{
-                        plugin: 'github',
-                        config: {
-                            githubPluginOptions,
-                            displayName: 'github.com'
+                    scms: {
+                        'github.com': {
+                            plugin: 'github',
+                            config: githubPluginOptions
+                        },
+                        'example.com': {
+                            plugin: 'example',
+                            config: examplePluginOptions
                         }
-                    },
-                    {
-                        plugin: 'example',
-                        config: examplePluginOptions
-                    }]
+                    }
                 });
             });
 
@@ -284,52 +305,23 @@ describe('index test', () => {
 
             assert.isUndefined(scmGithub);
             assert.isUndefined(scmGitlab);
-            assert.deepEqual(exampleScm.constructorParams, exampleOptions);
-        });
-
-        it('does not throw an error and not overwrited when duplicate scm plugins', () => {
-            assert.doesNotThrow(() => {
-                scm = new Scm({
-                    ecosystem,
-                    scms: [{
-                        plugin: 'example',
-                        config: examplePluginOptions
-                    },
-                    {
-                        plugin: 'example',
-                        config: {
-                            displayName: 'hoge'
-                        }
-                    }]
-                });
-            });
-
-            const scmGithub = scm.scms['github.context'];
-            const exampleScm = scm.scms['example.context'];
-            const scmGitlab = scm.scms['gitlab.context'];
-
-            assert.isUndefined(scmGithub);
-            assert.isUndefined(scmGitlab);
-            assert.deepEqual(exampleScm.constructorParams, exampleOptions);
+            assert.deepEqual(exampleScm.constructorParams, expectedExampleOptions);
         });
 
         it('throw an error when not registered all scm plugins', () => {
             githubScmMock.getScmContexts.returns(['']);
             assert.throws(() => {
                 scm = new Scm({
-                    ecosystem,
-                    scms: [{
-                        plugin: 'github',
-                        config: {
-                            displayName: 'github.com'
+                    scms: {
+                        'DNE.com': {
+                            plugin: 'DNE',
+                            config: {}
+                        },
+                        'DNE.co.jp': {
+                            plugin: 'DNE',
+                            config: {}
                         }
-                    },
-                    {
-                        plugin: 'github',
-                        config: {
-                            displayName: 'github.com'
-                        }
-                    }]
+                    }
                 });
             }, Error, 'No scm config passed in.');
         });
@@ -338,28 +330,36 @@ describe('index test', () => {
     describe('loadPlugin', () => {
         let githubOptions;
         let exampleOptions;
+        let expectedGithubOptions;
+        let expectedExampleOptions;
 
         beforeEach(() => {
+            scm = new Scm({
+                scms: {
+                    'github.com': {
+                        plugin: 'github',
+                        config: githubPluginOptions
+                    }
+                }
+            });
             githubOptions = Object.assign(
-                { ecosystem },
                 githubPluginOptions
             );
             exampleOptions = Object.assign(
-                { ecosystem },
                 examplePluginOptions
             );
-            scm = new Scm({
-                ecosystem,
-                scms: [{
-                    plugin: 'github',
-                    config: githubPluginOptions
-                }]
-            });
+            expectedGithubOptions = Object.assign(
+                githubOptions,
+                { displayName: 'github.com' }
+            );
+            expectedExampleOptions = Object.assign(
+                exampleOptions,
+                { displayName: 'example.com' }
+            );
         });
 
         it('register a plugin', () => {
             const config = Object.assign(
-                { ecosystem },
                 { displayName: 'example.com' },
                 examplePluginOptions
             );
@@ -369,13 +369,12 @@ describe('index test', () => {
             const scmGithub = scm.scms['github.context'];
             const exampleScm = scm.scms['example.context'];
 
-            assert.deepEqual(scmGithub.constructorParams, githubOptions);
-            assert.deepEqual(exampleScm.constructorParams, exampleOptions);
+            assert.deepEqual(scmGithub.constructorParams, expectedGithubOptions);
+            assert.deepEqual(exampleScm.constructorParams, expectedExampleOptions);
         });
 
         it('does not throw an error when a npm module cannot be registered', () => {
             const config = Object.assign(
-                { ecosystem },
                 { displayName: 'DNE.com' }
             );
 
@@ -385,12 +384,11 @@ describe('index test', () => {
 
             const scmGithub = scm.scms['github.context'];
 
-            assert.deepEqual(scmGithub.constructorParams, githubOptions);
+            assert.deepEqual(scmGithub.constructorParams, expectedGithubOptions);
         });
 
         it('does not throw an error when scm-router plugin be specified for scms setting', () => {
             const config = Object.assign(
-                { ecosystem },
                 { displayName: 'example.com' },
                 examplePluginOptions
             );
@@ -403,7 +401,7 @@ describe('index test', () => {
             const exampleScm = scm.scms['example.context'];
             const scmGitlab = scm.scms['gitlab.context'];
 
-            assert.deepEqual(scmGithub.constructorParams, githubOptions);
+            assert.deepEqual(scmGithub.constructorParams, expectedGithubOptions);
             assert.isUndefined(scmGitlab);
             assert.isUndefined(exampleScm);
         });
@@ -411,7 +409,6 @@ describe('index test', () => {
         it('does not throw an error when npm module return empty scmContext', () => {
             exampleScmMock.getScmContexts.returns(['']);
             const config = Object.assign(
-                { ecosystem },
                 { displayName: 'example.com' },
                 examplePluginOptions
             );
@@ -424,35 +421,7 @@ describe('index test', () => {
             const exampleScm = scm.scms['example.context'];
             const scmGitlab = scm.scms['gitlab.context'];
 
-            assert.deepEqual(scmGithub.constructorParams, githubOptions);
-            assert.isUndefined(scmGitlab);
-            assert.isUndefined(exampleScm);
-        });
-
-        it('does not throw an error and overwrite when duplicate scm plugins', () => {
-            githubOptions = Object.assign(
-                { displayName: 'my.github.com' },
-                githubOptions
-            );
-            const configDummy = {
-                displayName: 'hoge.com'
-            };
-            const config = Object.assign(
-                { ecosystem },
-                { displayName: 'my.github.com' },
-                githubPluginOptions
-            );
-
-            assert.doesNotThrow(() => {
-                scm.loadPlugin('github', configDummy);
-                scm.loadPlugin('github', config);
-            });
-
-            const scmGithub = scm.scms['github.context'];
-            const exampleScm = scm.scms['example.context'];
-            const scmGitlab = scm.scms['gitlab.context'];
-
-            assert.deepEqual(scmGithub.constructorParams, githubOptions);
+            assert.deepEqual(scmGithub.constructorParams, expectedGithubOptions);
             assert.isUndefined(scmGitlab);
             assert.isUndefined(exampleScm);
         });

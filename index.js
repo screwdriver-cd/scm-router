@@ -8,16 +8,13 @@ class ScmRouter extends Scm {
     /**
      * Constructs a router for different scm strategies
      * @method constructor
-     * @param  {Object}         config                             Object with scms and ecosystem
-     * @param  {Object}         [config.ecosystem]                 Optional object with ecosystem values
+     * @param  {Object}         config                             Object with scms
      * @param  {Array}          config.scms                        Array of scms to load
      * @param  {String}         config.scms[x].plugin              Name of the scm NPM module to load
      * @param  {String}         config.scms[x].config              Configuration to construct the module with
-     * @param  {String}         config.scms[x].config.displayName  Nickname to displaoy of the scm
      * @return {ScmRouter}
      */
     constructor(config = {}) {
-        const ecosystem = config.ecosystem;
         const scmsConfig = config.scms;
 
         super();
@@ -25,17 +22,19 @@ class ScmRouter extends Scm {
         this.scms = {};
 
         if (typeof scmsConfig === 'object') {
-            if (!(Array.isArray(scmsConfig))) {
-                throw new Error('No scm config passed in.');
-            }
-            scmsConfig.forEach((scm) => {
-                if (typeof scm.config === 'object' && typeof scm.config.displayName === 'string') {
-                    const options = hoek.applyToDefaults({ ecosystem }, scm.config);  // Add ecosystem to scm options
+            Object.keys(scmsConfig).forEach((displayName) => {
+                const scm = scmsConfig[displayName];
 
-                    this.loadPlugin(scm.plugin, options);
-                } else {
-                    throw new Error(`Display name not specified for ${scm.plugin} scm plugin`);
+                if (typeof scm !== 'object') {
+                    throw new Error('No scm config passed in.');
                 }
+                if (scm.config && typeof scm.config !== 'object') {
+                    throw new Error('No scm config passed in.');
+                }
+
+                const options = hoek.applyToDefaults({ displayName }, scm.config);  // Add displayName to scm options
+
+                this.loadPlugin(scm.plugin, options);
             });
         }
 
@@ -47,8 +46,8 @@ class ScmRouter extends Scm {
     /**
      * load scm module
      * @method loadPlugin
-     * @param  {String}         plugin       load plugin name
-     * @param  {Object}         options      settings for scm module
+     * @param  {String}         plugin                   load plugin name
+     * @param  {Object}         options                  settings for scm module
      */
     loadPlugin(plugin, options) {
         if (plugin === 'router') {
