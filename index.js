@@ -125,7 +125,7 @@ class ScmRouter extends Scm {
             if (config && typeof config.scmContext === 'string') {
                 const scm = this.scms[config.scmContext];
 
-                if (scm && scm instanceof Scm) {
+                if (scm) {
                     return resolve(scm);
                 }
             }
