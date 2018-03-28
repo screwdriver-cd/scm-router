@@ -1,6 +1,6 @@
 {
   "name": "screwdriver-scm-router",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A generic plugin for routing builds to specified scm",
   "main": "index.js",
   "scripts": {
@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "async": "^2.0.1",
-    "screwdriver-scm-base": "^3.0.0"
+    "screwdriver-scm-base": "^4.0.1"
   },
   "release": {
     "debug": false,
