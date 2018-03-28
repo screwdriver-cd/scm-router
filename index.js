@@ -32,7 +32,7 @@ class ScmRouter extends Scm {
                     throw new Error('No scm config passed in.');
                 }
 
-                const options = hoek.applyToDefaults({ displayName }, scm.config);  // Add displayName to scm options
+                const options = hoek.applyToDefaults({ displayName }, scm.config); // Add displayName to scm options
 
                 this.loadPlugin(scm.plugin, options);
             });
@@ -272,6 +272,17 @@ class ScmRouter extends Scm {
      */
     _getFile(config) {
         return this.chooseScm(config).then(scm => scm.getFile(config));
+    }
+
+    /**
+     * Fetch changed files
+     * @method _getChangedFiles
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {Promise}                        Changed files for scmContext
+     */
+    _getChangedFiles(config) {
+        return this.chooseScm(config).then(scm => scm.getChangedFiles(config));
     }
 
     /**

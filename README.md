@@ -17,7 +17,7 @@ npm install screwdriver-scm-router
 
 ### Interface
 
-It will initialize any routers specified in the [default.yaml](https://github.com/screwdriver-cd/screwdriver/blob/master/config/default.yaml#L123-L156) under the `scms` keyword.
+It will initialize any routers specified in the [default.yaml](https://github.com/screwdriver-cd/screwdriver/blob/master/config/default.yaml#L147-L185) under the `scms` keyword.
 
 **Example scm yaml section:**
 ```

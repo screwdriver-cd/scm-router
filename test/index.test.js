@@ -47,6 +47,7 @@ describe('index test', () => {
             'getCommitSha',
             'updateCommitStatus',
             'getFile',
+            'getChangedFiles',
             'getOpenedPRs',
             'getPrInfo'
         ].forEach((method) => {
@@ -742,6 +743,25 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.getFile);
                     assert.calledOnce(exampleScm.getFile);
                     assert.calledWith(exampleScm.getFile, config);
+                });
+        });
+    });
+
+    describe('_getChangedFiles', () => {
+        const config = { scmContext: 'example.context' };
+
+        it('call origin getChangedFiles', () => {
+            const scmGithub = scm.scms['github.context'];
+            const exampleScm = scm.scms['example.context'];
+            const scmGitlab = scm.scms['gitlab.context'];
+
+            return scm._getChangedFiles(config)
+                .then((result) => {
+                    assert.strictEqual(result, 'example');
+                    assert.notCalled(scmGithub.getChangedFiles);
+                    assert.notCalled(scmGitlab.getChangedFiles);
+                    assert.calledOnce(exampleScm.getChangedFiles);
+                    assert.calledWith(exampleScm.getChangedFiles, config);
                 });
         });
     });
