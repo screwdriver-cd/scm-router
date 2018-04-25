@@ -115,42 +115,36 @@ class ScmRouter extends Scm {
 
     /**
      * choose scm module
-     * @method chooseScm
+     * @async  chooseScm
      * @param  {Object}     config              Configuration
      * @param  {String}     config.scmContext   Name of scm context
      * @return {Promise}                        scm object
      */
-    chooseScm(config) {
-        return new Promise((resolve, reject) => {
-            if (config && typeof config.scmContext === 'string') {
-                const scm = this.scms[config.scmContext];
+    async chooseScm(config) {
+        if (config && typeof config.scmContext === 'string') {
+            const scm = this.scms[config.scmContext];
 
-                if (scm) {
-                    return resolve(scm);
-                }
+            if (scm) {
+                return scm;
             }
+        }
 
-            return reject(new Error('Not implemented'));
-        });
+        throw new Error('Not implemented');
     }
 
     /**
-     * Process by all scm module
-     * @method allScm
-     * @param  {function(scm)}                  callback to return map
-     * @return {Promise}                        combined callback results
+     * Higher-order function that maps all scm modules and returns result
+     * @async  allScm
+     * @param  {function(scm)}     fn      function that maps an scm value
+     * @return {Promise}                   the mapped results of all scm values
      */
-    allScm(callback) {
-        return Promise.all(Object.keys(this.scms).map(key => callback(this.scms[key])))
-            .then((results) => {
-                let map = {};
+    async allScm(fn) {
+        const map = {};
+        const results = await Promise.all(Object.keys(this.scms).map(key => fn(this.scms[key])));
 
-                results.forEach((result) => {
-                    map = Object.assign(map, result);
-                });
+        results.forEach(result => Object.assign(map, result));
 
-                return map;
-            });
+        return map;
     }
 
     /**
@@ -349,7 +343,7 @@ class ScmRouter extends Scm {
      */
     _canHandleWebhook(headers, payload) {
         return this.chooseWebhookScm(headers, payload)
-            .then(scm => !!scm)
+            .then(scm => Boolean(scm))
             .catch(() => false);
     }
 
