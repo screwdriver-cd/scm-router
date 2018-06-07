@@ -360,12 +360,12 @@ class ScmRouter extends Scm {
 
     /**
      * Get branch info of scmContext
-     * @method getBranchList
+     * @method _getBranchList
      * @param  {Object}     config              Configuration
      * @param  {String}     config.scmContext   Name of scm context
      * @return {String}                         branch info of scmContext
      */
-    getBranchList(config) {
+    _getBranchList(config) {
         return this.chooseScm(config).then(scm => scm.getBranchList(config));
     }
 }
