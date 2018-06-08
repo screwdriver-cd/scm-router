@@ -357,6 +357,17 @@ class ScmRouter extends Scm {
     getDisplayName(config) {
         return this.scms[config.scmContext].getDisplayName();
     }
+
+    /**
+     * Get branch info of scmContext
+     * @method _getBranchList
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {String}                         branch info of scmContext
+     */
+    _getBranchList(config) {
+        return this.chooseScm(config).then(scm => scm.getBranchList(config));
+    }
 }
 
 module.exports = ScmRouter;
