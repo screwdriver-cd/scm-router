@@ -49,7 +49,8 @@ describe('index test', () => {
             'getFile',
             'getChangedFiles',
             'getOpenedPRs',
-            'getPrInfo'
+            'getPrInfo',
+            'getBranchList'
         ].forEach((method) => {
             mock[method] = sinon.stub().resolves(plugin);
         });
@@ -898,6 +899,25 @@ describe('index test', () => {
             assert.notCalled(scmGithub.getDisplayName);
             assert.notCalled(scmGitlab.getDisplayName);
             assert.calledOnce(exampleScm.getDisplayName);
+        });
+    });
+
+    describe('_getBranchList', () => {
+        const config = { scmContext: 'example.context' };
+
+        it('call origin getBranchList', () => {
+            const scmGithub = scm.scms['github.context'];
+            const exampleScm = scm.scms['example.context'];
+            const scmGitlab = scm.scms['gitlab.context'];
+
+            return scm._getBranchList(config)
+                .then((result) => {
+                    assert.strictEqual(result, 'example');
+                    assert.notCalled(scmGithub.getBranchList);
+                    assert.notCalled(scmGitlab.getBranchList);
+                    assert.calledOnce(exampleScm.getBranchList);
+                    assert.calledWith(exampleScm.getBranchList, config);
+                });
         });
     });
 });
