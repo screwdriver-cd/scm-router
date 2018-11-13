@@ -236,6 +236,17 @@ class ScmRouter extends Scm {
     }
 
     /**
+     * Get a users permissions on an organization
+     * @method getOrgPermissions
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {Promise}
+     */
+    _getOrgPermissions(config) {
+        return this.chooseScm(config).then(scm => scm.getOrgPermissions(config));
+    }
+
+    /**
      * Get a commit sha for a specific repo#branch or pull request
      * @method _getCommitSha
      * @param  {Object}     config              Configuration
