@@ -44,6 +44,7 @@ describe('index test', () => {
             'decorateCommit',
             'decorateAuthor',
             'getPermissions',
+            'getOrgPermissions',
             'getCommitSha',
             'updateCommitStatus',
             'getFile',
@@ -675,7 +676,7 @@ describe('index test', () => {
     describe('_getPermissions', () => {
         const config = { scmContext: 'example.context' };
 
-        it('call origin getPermissons', () => {
+        it('call origin getPermissions', () => {
             const scmGithub = scm.scms['github.context'];
             const exampleScm = scm.scms['example.context'];
             const scmGitlab = scm.scms['gitlab.context'];
@@ -687,6 +688,25 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.getPermissions);
                     assert.calledOnce(exampleScm.getPermissions);
                     assert.calledWith(exampleScm.getPermissions, config);
+                });
+        });
+    });
+
+    describe('_getOrgPermissions', () => {
+        const config = { scmContext: 'example.context' };
+
+        it('call origin getOrgPermissions', () => {
+            const scmGithub = scm.scms['github.context'];
+            const exampleScm = scm.scms['example.context'];
+            const scmGitlab = scm.scms['gitlab.context'];
+
+            return scm._getOrgPermissions(config)
+                .then((result) => {
+                    assert.strictEqual(result, 'example');
+                    assert.notCalled(scmGithub.getOrgPermissions);
+                    assert.notCalled(scmGitlab.getOrgPermissions);
+                    assert.calledOnce(exampleScm.getOrgPermissions);
+                    assert.calledWith(exampleScm.getOrgPermissions, config);
                 });
         });
     });
