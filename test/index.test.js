@@ -730,6 +730,25 @@ describe('index test', () => {
         });
     });
 
+    describe('_addPrComment', () => {
+        const config = { scmContext: 'example.context' };
+
+        it('call origin addPrComment', () => {
+            const scmGithub = scm.scms['github.context'];
+            const exampleScm = scm.scms['example.context'];
+            const scmGitlab = scm.scms['gitlab.context'];
+
+            return scm._addPrComment(config)
+                .then((result) => {
+                    assert.strictEqual(result, 'example');
+                    assert.notCalled(scmGithub.addPrComment);
+                    assert.notCalled(scmGitlab.addPrComment);
+                    assert.calledOnce(exampleScm.addPrComment);
+                    assert.calledWith(exampleScm.addPrComment, config);
+                });
+        });
+    });
+
     describe('_updateCommitStatus', () => {
         const config = { scmContext: 'example.context' };
 
