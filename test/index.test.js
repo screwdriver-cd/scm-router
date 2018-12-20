@@ -46,6 +46,7 @@ describe('index test', () => {
             'getPermissions',
             'getOrgPermissions',
             'getCommitSha',
+            'addPrComment',
             'updateCommitStatus',
             'getFile',
             'getChangedFiles',
