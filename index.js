@@ -258,17 +258,6 @@ class ScmRouter extends Scm {
     }
 
     /**
-     * Add a comment on a pull request
-     * @method _addPrComment
-     * @param  {Object}     config              Configuration
-     * @param  {String}     config.scmContext   Name of scm context
-     * @return {Promise}
-     */
-    _addPrComment(config) {
-        return this.chooseScm(config).then(scm => scm.addPrComment(config));
-    }
-
-    /**
      * Update the commit status for a given repo and sha
      * @method _updateCommitStatus
      * @param  {Object}     config              Configuration
