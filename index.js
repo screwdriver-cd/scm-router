@@ -3,6 +3,7 @@
 const Scm = require('screwdriver-scm-base');
 const async = require('async');
 const hoek = require('hoek');
+const winston = require('winston');
 
 class ScmRouter extends Scm {
     /**
@@ -172,7 +173,15 @@ class ScmRouter extends Scm {
      */
     _parseHook(headers, payload) {
         return this.chooseWebhookScm(headers, payload)
-            .then(scm => (scm ? scm.parseHook(headers, payload) : null));
+            .then((scm) => {
+                if (!scm) {
+                    winston.info('Webhook does not match any expected events or actions.');
+
+                    return null;
+                }
+
+                return scm.parseHook(headers, payload);
+            });
     }
 
     /**
