@@ -94,7 +94,7 @@ class ScmRouter extends Scm {
      * @return {Promise}                     scm object
      */
     chooseWebhookScm(headers, payload) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             // choose a webhook scm module, or null if there is no suitable one
             async.detect(this.scms, (scm, cb) => {
                 scm.canHandleWebhook(headers, payload)
@@ -103,13 +103,7 @@ class ScmRouter extends Scm {
                     }).catch(() => {
                         cb(null);
                     });
-            }, (ret) => {
-                if (ret === null) {
-                    return reject(new Error('there is no suitable webhook module'));
-                }
-
-                return resolve(ret);
-            });
+            }, ret => resolve(ret));
         });
     }
 
@@ -177,7 +171,8 @@ class ScmRouter extends Scm {
      * @return {Promise}
      */
     _parseHook(headers, payload) {
-        return this.chooseWebhookScm(headers, payload).then(scm => scm.parseHook(headers, payload));
+        return this.chooseWebhookScm(headers, payload)
+            .then(scm => (scm ? scm.parseHook(headers, payload) : null));
     }
 
     /**
