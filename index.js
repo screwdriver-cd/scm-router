@@ -262,6 +262,17 @@ class ScmRouter extends Scm {
     }
 
     /**
+     * Get a commit sha from a reference
+     * @method _getCommitRefSha
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {Promise}
+     */
+    _getCommitRefSha(config) {
+        return this.chooseScm(config).then(scm => scm.getCommitRefSha(config));
+    }
+
+    /**
      * Add a comment on a pull request
      * @method _addPrComment
      * @param  {Object}     config              Configuration

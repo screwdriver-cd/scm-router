@@ -46,6 +46,7 @@ describe('index test', () => {
             'getPermissions',
             'getOrgPermissions',
             'getCommitSha',
+            'getCommitRefSha',
             'addPrComment',
             'updateCommitStatus',
             'getFile',
@@ -727,6 +728,25 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.getCommitSha);
                     assert.calledOnce(exampleScm.getCommitSha);
                     assert.calledWith(exampleScm.getCommitSha, config);
+                });
+        });
+    });
+
+    describe('_getCommitRefSha', () => {
+        const config = { scmContext: 'example.context' };
+
+        it('call origin getCommitRefSha', () => {
+            const scmGithub = scm.scms['github.context'];
+            const exampleScm = scm.scms['example.context'];
+            const scmGitlab = scm.scms['gitlab.context'];
+
+            return scm._getCommitRefSha(config)
+                .then((result) => {
+                    assert.strictEqual(result, 'example');
+                    assert.notCalled(scmGithub.getCommitRefSha);
+                    assert.notCalled(scmGitlab.getCommitRefSha);
+                    assert.calledOnce(exampleScm.getCommitRefSha);
+                    assert.calledWith(exampleScm.getCommitRefSha, config);
                 });
         });
     });
