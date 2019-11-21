@@ -3,7 +3,7 @@
 const Scm = require('screwdriver-scm-base');
 const async = require('async');
 const hoek = require('hoek');
-const winston = require('winston');
+const logger = require('screwdriver-logger');
 
 class ScmRouter extends Scm {
     /**
@@ -52,7 +52,7 @@ class ScmRouter extends Scm {
      */
     loadPlugin(plugin, options) {
         if (plugin === 'router') {
-            console.warn('The plugin of scm-router can not be specified for scms setting');
+            logger.warn('The plugin of scm-router can not be specified for scms setting');
 
             return;
         }
@@ -63,7 +63,7 @@ class ScmRouter extends Scm {
             // eslint-disable-next-line global-require, import/no-dynamic-require
             ScmPlugin = require(`screwdriver-scm-${plugin}`);
         } catch (e) {
-            console.warn(`Scm plugin ${plugin} is not supported`);
+            logger.warn(`Scm plugin ${plugin} is not supported`);
 
             return;
         }
@@ -73,13 +73,13 @@ class ScmRouter extends Scm {
         const scmContext = scmContexts[0]; // plugins return only one scmContext
 
         if (!scmContext || typeof scmContext !== 'string') {
-            console.warn(`Illegal scmContext for ${plugin} scm plugin`);
+            logger.warn(`Illegal scmContext for ${plugin} scm plugin`);
 
             return;
         }
 
         if (typeof this.scms[scmContext] === 'object') {
-            console.warn(`Duplicate scm config for ${scmContext}`);
+            logger.warn(`Duplicate scm config for ${scmContext}`);
 
             return;
         }
@@ -175,7 +175,7 @@ class ScmRouter extends Scm {
         return this.chooseWebhookScm(headers, payload)
             .then((scm) => {
                 if (!scm) {
-                    winston.info('Webhook does not match any expected events or actions.');
+                    logger.info('Webhook does not match any expected events or actions.');
 
                     return null;
                 }
