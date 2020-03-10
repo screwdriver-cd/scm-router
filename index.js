@@ -101,7 +101,8 @@ class ScmRouter extends Scm {
                 scm.canHandleWebhook(headers, payload)
                     .then((result) => {
                         cb(result === false ? null : scm);
-                    }).catch(() => {
+                    }).catch((err) => {
+                        logger.error(err);
                         cb(null);
                     });
             }, ret => resolve(ret));
