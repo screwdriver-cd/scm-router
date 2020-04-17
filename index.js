@@ -406,6 +406,17 @@ class ScmRouter extends Scm {
     _getBranchList(config) {
         return this.chooseScm(config).then(scm => scm.getBranchList(config));
     }
+
+    /**
+     * Open a pull request on the repository
+     * @method _openPr
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {Object}                         Created PR
+     */
+    _openPr(config) {
+        return this.chooseScm(config).then(scm => scm.openPr(config));
+    }
 }
 
 module.exports = ScmRouter;

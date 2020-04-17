@@ -980,4 +980,23 @@ describe('index test', () => {
                 });
         });
     });
+
+    describe('_openPr', () => {
+        const config = { scmContext: 'example.context' };
+
+        it('call origin openPr', () => {
+            const scmGithub = scm.scms['github.context'];
+            const exampleScm = scm.scms['example.context'];
+            const scmGitlab = scm.scms['gitlab.context'];
+
+            return scm._openPr(config)
+                .then((result) => {
+                    assert.strictEqual(result, 'example');
+                    assert.notCalled(scmGithub.openPr);
+                    assert.notCalled(scmGitlab.openPr);
+                    assert.calledOnce(exampleScm.openPr);
+                    assert.calledWith(exampleScm.openPr, config);
+                });
+        });
+    });
 });
