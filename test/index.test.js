@@ -53,7 +53,8 @@ describe('index test', () => {
             'getChangedFiles',
             'getOpenedPRs',
             'getPrInfo',
-            'getBranchList'
+            'getBranchList',
+            'openPr'
         ].forEach((method) => {
             mock[method] = sinon.stub().resolves(plugin);
         });
