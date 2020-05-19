@@ -982,7 +982,20 @@ describe('index test', () => {
     });
 
     describe('_openPr', () => {
-        const config = { scmContext: 'example.context' };
+        const config = {
+            checkoutUrl: 'git@github.com:screwdriver-cd/scm-github.git#master',
+            token: 'thisisatoken',
+            files: [{
+                name: 'file.txt',
+                content: 'content'
+            }, {
+                name: 'file2.txt',
+                content: 'content'
+            }],
+            title: 'update file',
+            message: 'update file',
+            scmContext: 'example.context'
+        };
 
         it('call origin openPr', () => {
             const scmGithub = scm.scms['github.context'];
