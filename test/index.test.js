@@ -53,7 +53,8 @@ describe('index test', () => {
             'getChangedFiles',
             'getOpenedPRs',
             'getPrInfo',
-            'getBranchList'
+            'getBranchList',
+            'openPr'
         ].forEach((method) => {
             mock[method] = sinon.stub().resolves(plugin);
         });
@@ -977,6 +978,38 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.getBranchList);
                     assert.calledOnce(exampleScm.getBranchList);
                     assert.calledWith(exampleScm.getBranchList, config);
+                });
+        });
+    });
+
+    describe('_openPr', () => {
+        const config = {
+            checkoutUrl: 'git@github.com:screwdriver-cd/scm-github.git#master',
+            token: 'thisisatoken',
+            files: [{
+                name: 'file.txt',
+                content: 'content'
+            }, {
+                name: 'file2.txt',
+                content: 'content'
+            }],
+            title: 'update file',
+            message: 'update file',
+            scmContext: 'example.context'
+        };
+
+        it('call origin openPr', () => {
+            const scmGithub = scm.scms['github.context'];
+            const exampleScm = scm.scms['example.context'];
+            const scmGitlab = scm.scms['gitlab.context'];
+
+            return scm._openPr(config)
+                .then((result) => {
+                    assert.strictEqual(result, 'example');
+                    assert.notCalled(scmGithub.openPr);
+                    assert.notCalled(scmGitlab.openPr);
+                    assert.calledOnce(exampleScm.openPr);
+                    assert.calledWith(exampleScm.openPr, config);
                 });
         });
     });

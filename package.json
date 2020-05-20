@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "async": "^2.6.1",
-    "screwdriver-scm-base": "^5.0.0",
+    "screwdriver-scm-base": "^6.0.0",
     "screwdriver-logger": "^1.0.0"
   },
   "release": {
