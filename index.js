@@ -178,6 +178,17 @@ class ScmRouter extends Scm {
 
     /**
      * Parse the url for a repo for the specific source control
+     * @method _addDeployKey
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {Promise}
+     */
+    _addDeployKey(config) {
+        return this.chooseScm(config).then(scm => scm.addDeployKey(config));
+    }
+
+    /**
+     * Parse the url for a repo for the specific source control
      * @method _parseUrl
      * @param  {Object}     config              Configuration
      * @param  {String}     config.scmContext   Name of scm context

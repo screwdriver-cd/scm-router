@@ -38,7 +38,10 @@ describe('index test', () => {
             'dummyRejectFunction',
             'addWebhook',
             'addDeployKey',
+<<<<<<< HEAD
             'autoDeployKeyGenerationEnabled',
+=======
+>>>>>>> 0a3f386... feat(scm-router): Add addDeployKey method
             'parseUrl',
             'parseHook',
             'getCheckoutCommand',
