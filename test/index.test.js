@@ -37,6 +37,7 @@ describe('index test', () => {
             'dummyFunction',
             'dummyRejectFunction',
             'addWebhook',
+            'addDeployKey',
             'parseUrl',
             'parseHook',
             'getCheckoutCommand',
@@ -557,6 +558,25 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.addWebhook);
                     assert.calledOnce(exampleScm.addWebhook);
                     assert.calledWith(exampleScm.addWebhook, config);
+                });
+        });
+    });
+
+    describe('_addDeployKey', () => {
+        const config = { scmContext: 'example.context' };
+
+        it('call origin addDeployKey', () => {
+            const scmGithub = scm.scms['github.context'];
+            const exampleScm = scm.scms['example.context'];
+            const scmGitlab = scm.scms['gitlab.context'];
+
+            return scm._addDeployKey(config)
+                .then((result) => {
+                    assert.strictEqual(result, 'example');
+                    assert.notCalled(scmGithub.addDeployKey);
+                    assert.notCalled(scmGitlab.addDeployKey);
+                    assert.calledOnce(exampleScm.addDeployKey);
+                    assert.calledWith(exampleScm.addDeployKey, config);
                 });
         });
     });
