@@ -39,9 +39,13 @@ describe('index test', () => {
             'addWebhook',
             'addDeployKey',
 <<<<<<< HEAD
+<<<<<<< HEAD
             'autoDeployKeyGenerationEnabled',
 =======
 >>>>>>> 0a3f386... feat(scm-router): Add addDeployKey method
+=======
+            'checkAutoDeployKeyGeneration',
+>>>>>>> e6b399f... feat(): add tests for checkAutoDeployKeyGeneration
             'parseUrl',
             'parseHook',
             'getCheckoutCommand',
@@ -592,7 +596,7 @@ describe('index test', () => {
             const scmGithub = scm.scms['github.context'];
             const exampleScm = scm.scms['example.context'];
             const scmGitlab = scm.scms['gitlab.context'];
-
+            
             return scm._autoDeployKeyGenerationEnabled(config)
                 .then((result) => {
                     assert.strictEqual(result, 'example');
