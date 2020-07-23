@@ -38,7 +38,7 @@ describe('index test', () => {
             'dummyRejectFunction',
             'addWebhook',
             'addDeployKey',
-            'checkAutoDeployKeyGeneration',
+            'autoDeployKeyGenerationEnabled',
             'parseUrl',
             'parseHook',
             'getCheckoutCommand',
@@ -582,21 +582,21 @@ describe('index test', () => {
         });
     });
 
-    describe('_checkAutoDeployKeyGeneration', () => {
+    describe('_autoDeployKeyGenerationEnabled', () => {
         const config = { scmContext: 'example.context' };
 
-        it('call origin checkAutoDeployKeyGeneration', () => {
+        it('call origin autoDeployKeyGenerationEnabled', () => {
             const scmGithub = scm.scms['github.context'];
             const exampleScm = scm.scms['example.context'];
             const scmGitlab = scm.scms['gitlab.context'];
 
-            return scm._checkAutoDeployKeyGeneration(config)
+            return scm._autoDeployKeyGenerationEnabled(config)
                 .then((result) => {
                     assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.checkAutoDeployKeyGeneration);
-                    assert.notCalled(scmGitlab.checkAutoDeployKeyGeneration);
-                    assert.calledOnce(exampleScm.checkAutoDeployKeyGeneration);
-                    assert.calledWith(exampleScm.checkAutoDeployKeyGeneration, config);
+                    assert.notCalled(scmGithub.autoDeployKeyGenerationEnabled);
+                    assert.notCalled(scmGitlab.autoDeployKeyGenerationEnabled);
+                    assert.calledOnce(exampleScm.autoDeployKeyGenerationEnabled);
+                    assert.calledWith(exampleScm.autoDeployKeyGenerationEnabled, config);
                 });
         });
     });

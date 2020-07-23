@@ -155,14 +155,14 @@ class ScmRouter extends Scm {
     }
 
     /**
-     * Checks whether auto deploy key generation is switched on or not
-     * @method _checkAutoDeployKeyGeneratio
+     * Returns whether auto deploy key generation is enabled on or not
+     * @method _autoDeployKeyGenerationEnabled
      * @param  {Object}     config              Configuration
      * @param  {String}     config.scmContext   Name of scm context
      * @return {Promise}                        Resolves when operation completed without failure
      */
-    _checkAutoDeployKeyGeneration(config) {
-        return this.chooseScm(config).then(scm => scm.checkAutoDeployKeyGeneration(config));
+    _autoDeployKeyGenerationEnabled(config) {
+        return this.chooseScm(config).then(scm => scm.autoDeployKeyGenerationEnabled(config));
     }
 
     /**
