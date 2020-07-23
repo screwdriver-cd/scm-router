@@ -40,12 +40,16 @@ describe('index test', () => {
             'addDeployKey',
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             'autoDeployKeyGenerationEnabled',
 =======
 >>>>>>> 0a3f386... feat(scm-router): Add addDeployKey method
 =======
             'checkAutoDeployKeyGeneration',
 >>>>>>> e6b399f... feat(): add tests for checkAutoDeployKeyGeneration
+=======
+            'autoDeployKeyGenerationEnabled',
+>>>>>>> 02ba650... refactor(): change function name to autoDeployKeyGenerationEnabled
             'parseUrl',
             'parseHook',
             'getCheckoutCommand',
