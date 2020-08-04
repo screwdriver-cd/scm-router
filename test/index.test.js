@@ -38,6 +38,7 @@ describe('index test', () => {
             'dummyRejectFunction',
             'addWebhook',
             'addDeployKey',
+            'autoDeployKeyGenerationEnabled',
             'parseUrl',
             'parseHook',
             'getCheckoutCommand',
@@ -577,6 +578,25 @@ describe('index test', () => {
                     assert.notCalled(scmGitlab.addDeployKey);
                     assert.calledOnce(exampleScm.addDeployKey);
                     assert.calledWith(exampleScm.addDeployKey, config);
+                });
+        });
+    });
+
+    describe('_autoDeployKeyGenerationEnabled', () => {
+        const config = { scmContext: 'example.context' };
+
+        it('call origin autoDeployKeyGenerationEnabled', () => {
+            const scmGithub = scm.scms['github.context'];
+            const exampleScm = scm.scms['example.context'];
+            const scmGitlab = scm.scms['gitlab.context'];
+
+            return scm._autoDeployKeyGenerationEnabled(config)
+                .then((result) => {
+                    assert.strictEqual(result, 'example');
+                    assert.notCalled(scmGithub.autoDeployKeyGenerationEnabled);
+                    assert.notCalled(scmGitlab.autoDeployKeyGenerationEnabled);
+                    assert.calledOnce(exampleScm.autoDeployKeyGenerationEnabled);
+                    assert.calledWith(exampleScm.autoDeployKeyGenerationEnabled, config);
                 });
         });
     });
