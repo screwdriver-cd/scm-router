@@ -36,15 +36,15 @@
     "chai": "^3.5.0",
     "eslint": "^4.19.1",
     "eslint-config-screwdriver": "^3.0.1",
-    "hoek": "^5.0.4",
     "jenkins-mocha": "^8.0.0",
     "mockery": "^2.0.0",
     "sinon": "^2.3.4"
   },
   "dependencies": {
     "async": "^2.6.1",
-    "screwdriver-scm-base": "^6.0.0",
-    "screwdriver-logger": "^1.0.0"
+    "@hapi/hoek": "^9.0.4",
+    "screwdriver-logger": "^1.0.0",
+    "screwdriver-scm-base": "git://github.com/screwdriver-cd/scm-base.git#hapi-v19"
   },
   "release": {
     "debug": false,

@@ -2,7 +2,7 @@
 
 const Scm = require('screwdriver-scm-base');
 const async = require('async');
-const hoek = require('hoek');
+const hoek = require('@hapi/hoek');
 const logger = require('screwdriver-logger');
 
 class ScmRouter extends Scm {
