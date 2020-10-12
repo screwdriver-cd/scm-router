@@ -156,11 +156,10 @@ class ScmRouter extends Scm {
 
     /**
      * Get the webhook events mapping of screwdriver events and scm events
-     * @async _getWebhookEventsMapping
+     * @method _getWebhookEventsMapping
      * @return {Object}     Returns a mapping of the events
      */
     _getWebhookEventsMapping(config) {
-        // return this.chooseScm(config).then(scm => scm.getWebhookEventsMapping(config));
         return this.scms[config.scmContext].getWebhookEventsMapping();
     }
 
