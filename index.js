@@ -155,6 +155,15 @@ class ScmRouter extends Scm {
     }
 
     /**
+     * Get the webhook events mapping of screwdriver events and scm events
+     * @method _getWebhookEventsMapping
+     * @return {Object}     Returns a mapping of the events
+     */
+    _getWebhookEventsMapping(config) {
+        return this.scms[config.scmContext].getWebhookEventsMapping();
+    }
+
+    /**
      * Returns whether auto deploy key generation is enabled on or not
      * @method autoDeployKeyGenerationEnabled
      * @param  {Object}     config              Configuration
