@@ -56,7 +56,8 @@ describe('index test', () => {
             'getOpenedPRs',
             'getPrInfo',
             'getBranchList',
-            'openPr'
+            'openPr',
+            'getWebhookEventsMapping'
         ].forEach((method) => {
             mock[method] = sinon.stub().resolves(plugin);
         });
@@ -66,6 +67,7 @@ describe('index test', () => {
         mock.getScmContexts = sinon.stub().returns([`${plugin}.context`]);
         mock.getDisplayName = sinon.stub().returns(plugin);
         mock.autoDeployKeyGenerationEnabled = sinon.stub().returns(plugin);
+        mock.getWebhookEventsMapping = sinon.stub().returns({ pr: 'pull_request' });
 
         return mock;
     };
@@ -998,6 +1000,22 @@ describe('index test', () => {
             assert.notCalled(scmGithub.autoDeployKeyGenerationEnabled);
             assert.notCalled(scmGitlab.autoDeployKeyGenerationEnabled);
             assert.calledOnce(exampleScm.autoDeployKeyGenerationEnabled);
+        });
+    });
+
+    describe('getWebhookEventsMapping', () => {
+        const config = { scmContext: 'example.context' };
+
+        it('call origin getWebhookEventsMapping', () => {
+            const scmGithub = scm.scms['github.context'];
+            const exampleScm = scm.scms['example.context'];
+            const scmGitlab = scm.scms['gitlab.context'];
+            const result = scm._getWebhookEventsMapping(config);
+
+            assert.deepEqual(result, { pr: 'pull_request' });
+            assert.notCalled(scmGithub.getWebhookEventsMapping);
+            assert.notCalled(scmGitlab.getWebhookEventsMapping);
+            assert.calledOnce(exampleScm.getWebhookEventsMapping);
         });
     });
 
