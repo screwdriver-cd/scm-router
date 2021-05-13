@@ -38,7 +38,6 @@ describe('index test', () => {
             'dummyRejectFunction',
             'addWebhook',
             'addDeployKey',
-            'autoDeployKeyGenerationEnabled',
             'parseUrl',
             'parseHook',
             'getCheckoutCommand',
@@ -66,6 +65,7 @@ describe('index test', () => {
         mock.canHandleWebhook = sinon.stub().resolves(true);
         mock.getScmContexts = sinon.stub().returns([`${plugin}.context`]);
         mock.getDisplayName = sinon.stub().returns(plugin);
+        mock.readOnlyEnabled = sinon.stub().returns(plugin);
         mock.autoDeployKeyGenerationEnabled = sinon.stub().returns(plugin);
         mock.getWebhookEventsMapping = sinon.stub().returns({ pr: 'pull_request' });
 
@@ -369,7 +369,7 @@ describe('index test', () => {
             );
         });
 
-        it('register a plugin', () => {
+        it('registers a plugin', () => {
             const config = Object.assign(
                 { displayName: 'example.com' },
                 examplePluginOptions
@@ -398,7 +398,7 @@ describe('index test', () => {
             assert.deepEqual(scmGithub.constructorParams, expectedGithubOptions);
         });
 
-        it('does not throw an error when scm-router plugin be specified for scms setting', () => {
+        it('does not throw an error when scm-router plugin is specified for scms setting', () => {
             const config = Object.assign(
                 { displayName: 'example.com' },
                 examplePluginOptions
@@ -417,7 +417,7 @@ describe('index test', () => {
             assert.isUndefined(exampleScm);
         });
 
-        it('does not throw an error when npm module return empty scmContext', () => {
+        it('does not throw an error when npm module returns empty scmContext', () => {
             exampleScmMock.getScmContexts.returns(['']);
             const config = Object.assign(
                 { displayName: 'example.com' },
@@ -435,6 +435,19 @@ describe('index test', () => {
             assert.deepEqual(scmGithub.constructorParams, expectedGithubOptions);
             assert.isUndefined(scmGitlab);
             assert.isUndefined(exampleScm);
+        });
+
+        it('does not throw an error when scmContext already exists', () => {
+            const config = Object.assign(
+                { displayName: 'github.com' },
+                examplePluginOptions
+            );
+
+            scm.loadPlugin('github', config);
+
+            const scmGithub = scm.scms['github.context'];
+
+            assert.deepEqual(scmGithub.constructorParams, expectedGithubOptions);
         });
     });
 
@@ -984,6 +997,22 @@ describe('index test', () => {
             assert.notCalled(scmGithub.getDisplayName);
             assert.notCalled(scmGitlab.getDisplayName);
             assert.calledOnce(exampleScm.getDisplayName);
+        });
+    });
+
+    describe('readOnlyEnabled', () => {
+        const config = { scmContext: 'example.context' };
+
+        it('call origin getDisplayName', () => {
+            const scmGithub = scm.scms['github.context'];
+            const exampleScm = scm.scms['example.context'];
+            const scmGitlab = scm.scms['gitlab.context'];
+            const result = scm.readOnlyEnabled(config);
+
+            assert.strictEqual(result, 'example');
+            assert.notCalled(scmGithub.readOnlyEnabled);
+            assert.notCalled(scmGitlab.readOnlyEnabled);
+            assert.calledOnce(exampleScm.readOnlyEnabled);
         });
     });
 

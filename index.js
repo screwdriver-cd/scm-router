@@ -428,6 +428,17 @@ class ScmRouter extends Scm {
     }
 
     /**
+     * Get display name of scmContext
+     * @method getDisplayName
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {String}                         display name of scmContext
+     */
+    readOnlyEnabled(config) {
+        return this.scms[config.scmContext].readOnlyEnabled();
+    }
+
+    /**
      * Get branch info of scmContext
      * @method _getBranchList
      * @param  {Object}     config              Configuration
