@@ -72,6 +72,7 @@ describe('index test', () => {
         mock.getScmContexts = sinon.stub().returns([`${plugin}:${plugin}.com`]);
         mock.getScmContext = sinon.stub().returns(`${plugin}:${plugin}.com`);
         mock.getDisplayName = sinon.stub().returns(plugin);
+        mock.getUsername = sinon.stub().returns(plugin);
         mock.readOnlyEnabled = sinon.stub().returns(plugin);
         mock.autoDeployKeyGenerationEnabled = sinon.stub().returns(plugin);
         mock.getWebhookEventsMapping = sinon.stub().returns({ pr: 'pull_request' });
@@ -926,6 +927,19 @@ describe('index test', () => {
             assert.notCalled(scmGithub.getDisplayName);
             assert.notCalled(scmGitlab.getDisplayName);
             assert.calledOnce(exampleScm.getDisplayName);
+        });
+    });
+
+    describe('getUsername', () => {
+        const config = { scmContext: exampleScmContext };
+
+        it('call origin getUsername', () => {
+            const result = scm.getUsername(config);
+
+            assert.strictEqual(result, 'example');
+            assert.notCalled(scmGithub.getUsername);
+            assert.notCalled(scmGitlab.getUsername);
+            assert.calledOnce(exampleScm.getUsername);
         });
     });
 

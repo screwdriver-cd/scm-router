@@ -409,8 +409,8 @@ class ScmRouter extends Scm {
      * Get an scm context given a hostname (e.g. github:github.com)
      * @method _getScmContext
      * @param  {Object} config
-     * @param  {String} config.hostname Hostname for scmContext (e.g. github.com)
-     * @return {String}                 Full scmContext (e.g. github:github.com)
+     * @param  {String} [config.hostname]   Hostname for scmContext (e.g. github.com)
+     * @return {String}                     Full scmContext (e.g. github:github.com)
      */
     _getScmContext({ hostname }) {
         return Object.keys(this.scms).find(scmContext =>
@@ -439,6 +439,17 @@ class ScmRouter extends Scm {
      */
     getDisplayName(config) {
         return this.scms[config.scmContext].getDisplayName();
+    }
+
+    /**
+     * Get username of scmContext
+     * @method getUsername
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {String}                         Username of scmContext
+     */
+    getUsername(config) {
+        return this.scms[config.scmContext].getUsername();
     }
 
     /**
