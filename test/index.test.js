@@ -72,8 +72,7 @@ describe('index test', () => {
         mock.getScmContexts = sinon.stub().returns([`${plugin}:${plugin}.com`]);
         mock.getScmContext = sinon.stub().returns(`${plugin}:${plugin}.com`);
         mock.getDisplayName = sinon.stub().returns(plugin);
-        mock.getUsername = sinon.stub().returns(plugin);
-        mock.readOnlyEnabled = sinon.stub().returns(plugin);
+        mock.getReadOnlyInfo = sinon.stub().returns(plugin);
         mock.autoDeployKeyGenerationEnabled = sinon.stub().returns(plugin);
         mock.getWebhookEventsMapping = sinon.stub().returns({ pr: 'pull_request' });
 
@@ -930,29 +929,16 @@ describe('index test', () => {
         });
     });
 
-    describe('getUsername', () => {
+    describe('getReadOnlyInfo', () => {
         const config = { scmContext: exampleScmContext };
 
-        it('call origin getUsername', () => {
-            const result = scm.getUsername(config);
+        it('call origin getReadOnlyInfo', () => {
+            const result = scm.getReadOnlyInfo(config);
 
             assert.strictEqual(result, 'example');
-            assert.notCalled(scmGithub.getUsername);
-            assert.notCalled(scmGitlab.getUsername);
-            assert.calledOnce(exampleScm.getUsername);
-        });
-    });
-
-    describe('readOnlyEnabled', () => {
-        const config = { scmContext: exampleScmContext };
-
-        it('call origin getDisplayName', () => {
-            const result = scm.readOnlyEnabled(config);
-
-            assert.strictEqual(result, 'example');
-            assert.notCalled(scmGithub.readOnlyEnabled);
-            assert.notCalled(scmGitlab.readOnlyEnabled);
-            assert.calledOnce(exampleScm.readOnlyEnabled);
+            assert.notCalled(scmGithub.getReadOnlyInfo);
+            assert.notCalled(scmGitlab.getReadOnlyInfo);
+            assert.calledOnce(exampleScm.getReadOnlyInfo);
         });
     });
 

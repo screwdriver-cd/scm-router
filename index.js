@@ -442,25 +442,18 @@ class ScmRouter extends Scm {
     }
 
     /**
-     * Get username of scmContext
-     * @method getUsername
+     * Get read only config
+     * @method getReadOnlyInfo
      * @param  {Object}     config              Configuration
      * @param  {String}     config.scmContext   Name of scm context
-     * @return {String}                         Username of scmContext
+     * @return {Object}                         Read only config of scmContext (e.g.: {
+     *                                              "enabled": true,
+     *                                              "username": 'headless-user',
+     *                                              "accessToken": 'token'
+     *                                          })
      */
-    getUsername(config) {
-        return this.scms[config.scmContext].getUsername();
-    }
-
-    /**
-     * Get display name of scmContext
-     * @method getDisplayName
-     * @param  {Object}     config              Configuration
-     * @param  {String}     config.scmContext   Name of scm context
-     * @return {String}                         display name of scmContext
-     */
-    readOnlyEnabled(config) {
-        return this.scms[config.scmContext].readOnlyEnabled();
+    getReadOnlyInfo(config) {
+        return this.scms[config.scmContext].getReadOnlyInfo();
     }
 
     /**
