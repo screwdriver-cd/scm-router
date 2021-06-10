@@ -5,8 +5,6 @@ const async = require('async');
 const hoek = require('@hapi/hoek');
 const logger = require('screwdriver-logger');
 
-const MATCHED_SCM_HOSTNAME = 1;
-
 class ScmRouter extends Scm {
     /**
      * Constructs a router for different scm strategies
@@ -414,7 +412,7 @@ class ScmRouter extends Scm {
      */
     _getScmContext({ hostname }) {
         return Object.keys(this.scms).find(scmContext =>
-            scmContext.split(':')[MATCHED_SCM_HOSTNAME] === hostname);
+            scmContext.split(':')[1] === hostname);
     }
 
     /**
