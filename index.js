@@ -395,12 +395,24 @@ class ScmRouter extends Scm {
     }
 
     /**
-     * Get an array of scm context (e.g. [github:github.com, gitlab:mygitlab])
+     * Get an array of scm contexts (e.g. [github:github.com, gitlab:mygitlab])
      * @method _getScmContexts
      * @return {Array}
      */
     _getScmContexts() {
         return Object.keys(this.scms);
+    }
+
+    /**
+     * Get an scm context given a hostname (e.g. github:github.com)
+     * @method _getScmContext
+     * @param  {Object} config
+     * @param  {String} [config.hostname]   Hostname for scmContext (e.g. github.com)
+     * @return {String}                     Full scmContext (e.g. github:github.com)
+     */
+    _getScmContext({ hostname }) {
+        return Object.keys(this.scms).find(scmContext =>
+            scmContext.split(':')[1] === hostname);
     }
 
     /**
@@ -425,6 +437,21 @@ class ScmRouter extends Scm {
      */
     getDisplayName(config) {
         return this.scms[config.scmContext].getDisplayName();
+    }
+
+    /**
+     * Get read only config
+     * @method getReadOnlyInfo
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {Object}                         Read only config of scmContext (e.g.: {
+     *                                              "enabled": true,
+     *                                              "username": 'headless-user',
+     *                                              "accessToken": 'token'
+     *                                          })
+     */
+    getReadOnlyInfo(config) {
+        return this.scms[config.scmContext].getReadOnlyInfo();
     }
 
     /**
