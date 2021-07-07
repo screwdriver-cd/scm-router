@@ -4,7 +4,7 @@ const ScmBase = require('screwdriver-scm-base');
 
 module.exports = {
     getBaseClass: () => ScmBase,
-    createMock: (stubsMap) => {
+    createMock: stubsMap => {
         /**
          * Generic scm class for testing
          * @type {Class}
@@ -15,7 +15,7 @@ module.exports = {
 
                 this.options = options;
 
-                Object.keys(stubsMap).forEach((key) => {
+                Object.keys(stubsMap).forEach(key => {
                     this[key] = stubsMap[key];
                 });
             }

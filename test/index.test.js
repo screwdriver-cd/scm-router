@@ -3,7 +3,7 @@
 /* eslint-disable no-underscore-dangle */
 
 const chai = require('chai');
-const assert = chai.assert;
+const { assert } = chai;
 const mockery = require('mockery');
 const sinon = require('sinon');
 const testScm = require('./data/testScm');
@@ -36,7 +36,7 @@ describe('index test', () => {
     const githubScmContext = 'github:github.com';
     const exampleScmContext = 'example:example.com';
     const gitlabScmContext = 'gitlab:gitlab.com';
-    const initMock = (plugin) => {
+    const initMock = plugin => {
         const mock = {};
 
         [
@@ -63,7 +63,7 @@ describe('index test', () => {
             'getBranchList',
             'openPr',
             'getWebhookEventsMapping'
-        ].forEach((method) => {
+        ].forEach(method => {
             mock[method] = sinon.stub().resolves(plugin);
         });
         mock.getBellConfiguration = sinon.stub().resolves({ [plugin]: `${plugin}Bell` });
@@ -135,33 +135,22 @@ describe('index test', () => {
         let expectedGitlabOptions;
 
         beforeEach(() => {
-            githubOptions = Object.assign(
-                githubPluginOptions
-            );
-            exampleOptions = Object.assign(
-                examplePluginOptions
-            );
-            gitlabOptions = Object.assign(
-                gitlabPluginOptions
-            );
-            expectedGithubOptions = Object.assign(
-                githubOptions,
-                { displayName: 'github' }
-            );
-            expectedExampleOptions = Object.assign(
-                exampleOptions,
-                { displayName: 'example' }
-            );
-            expectedGitlabOptions = Object.assign(
-                gitlabOptions,
-                { displayName: 'gitlab' }
-            );
+            githubOptions = Object.assign(githubPluginOptions);
+            exampleOptions = Object.assign(examplePluginOptions);
+            gitlabOptions = Object.assign(gitlabPluginOptions);
+            expectedGithubOptions = Object.assign(githubOptions, { displayName: 'github' });
+            expectedExampleOptions = Object.assign(exampleOptions, { displayName: 'example' });
+            expectedGitlabOptions = Object.assign(gitlabOptions, { displayName: 'gitlab' });
         });
 
         it('throws an error when config does not exist', () => {
-            assert.throws(() => {
-                scm = new Scm();
-            }, Error, 'No scm config passed in.');
+            assert.throws(
+                () => {
+                    scm = new Scm();
+                },
+                Error,
+                'No scm config passed in.'
+            );
         });
 
         it('does not throw an error when the scm.config does not exist', () => {
@@ -177,21 +166,29 @@ describe('index test', () => {
         });
 
         it('throws an error when the scm config not a map', () => {
-            assert.throws(() => {
-                scm = new Scm({
-                    scms: {
-                        github: 'value'
-                    }
-                });
-            }, Error, 'No scm config passed in.');
+            assert.throws(
+                () => {
+                    scm = new Scm({
+                        scms: {
+                            github: 'value'
+                        }
+                    });
+                },
+                Error,
+                'No scm config passed in.'
+            );
         });
 
         it('throws an error when the scms config is an empty map', () => {
-            assert.throws(() => {
-                scm = new Scm({
-                    scms: {}
-                });
-            }, Error, 'No scm config passed in.');
+            assert.throws(
+                () => {
+                    scm = new Scm({
+                        scms: {}
+                    });
+                },
+                Error,
+                'No scm config passed in.'
+            );
         });
 
         it('does not throw an error when the config is an empty map', () => {
@@ -208,16 +205,20 @@ describe('index test', () => {
         });
 
         it('throws an error when the config is not a map', () => {
-            assert.throws(() => {
-                scm = new Scm({
-                    scms: {
-                        github: {
-                            plugin: 'github',
-                            config: 'config'
+            assert.throws(
+                () => {
+                    scm = new Scm({
+                        scms: {
+                            github: {
+                                plugin: 'github',
+                                config: 'config'
+                            }
                         }
-                    }
-                });
-            }, Error, 'No scm config passed in.');
+                    });
+                },
+                Error,
+                'No scm config passed in.'
+            );
         });
 
         it('does not throw an error when a npm module cannot be registered', () => {
@@ -262,10 +263,12 @@ describe('index test', () => {
 
         it('registers a single plugin', () => {
             scm = new Scm({
-                scms: [{
-                    plugin: 'example',
-                    config: examplePluginOptions
-                }]
+                scms: [
+                    {
+                        plugin: 'example',
+                        config: examplePluginOptions
+                    }
+                ]
             });
 
             exampleScm = scm.scms[exampleScmContext];
@@ -296,8 +299,7 @@ describe('index test', () => {
 
             assert.isUndefined(scmGithub);
             assert.isUndefined(scmGitlab);
-            assert.deepEqual(exampleScm.constructorParams,
-                Object.assign(exampleOptions, { displayName: 'example' }));
+            assert.deepEqual(exampleScm.constructorParams, Object.assign(exampleOptions, { displayName: 'example' }));
         });
 
         it('does not throw an error and skip when getScmContexts return is not a string', () => {
@@ -328,20 +330,24 @@ describe('index test', () => {
 
         it('throw an error when not registered all scm plugins', () => {
             githubScmMock.getScmContexts.returns(['']);
-            assert.throws(() => {
-                scm = new Scm({
-                    scms: {
-                        'DNE.com': {
-                            plugin: 'DNE',
-                            config: {}
-                        },
-                        'DNE.co.jp': {
-                            plugin: 'DNE',
-                            config: {}
+            assert.throws(
+                () => {
+                    scm = new Scm({
+                        scms: {
+                            'DNE.com': {
+                                plugin: 'DNE',
+                                config: {}
+                            },
+                            'DNE.co.jp': {
+                                plugin: 'DNE',
+                                config: {}
+                            }
                         }
-                    }
-                });
-            }, Error, 'No scm config passed in.');
+                    });
+                },
+                Error,
+                'No scm config passed in.'
+            );
         });
     });
 
@@ -360,27 +366,17 @@ describe('index test', () => {
                     }
                 }
             });
-            githubOptions = Object.assign(
-                githubPluginOptions
-            );
-            exampleOptions = Object.assign(
-                examplePluginOptions
-            );
-            expectedGithubOptions = Object.assign(
-                githubOptions,
-                { displayName: 'github' }
-            );
-            expectedExampleOptions = Object.assign(
-                exampleOptions,
-                { displayName: 'example' }
-            );
+            githubOptions = Object.assign(githubPluginOptions);
+            exampleOptions = Object.assign(examplePluginOptions);
+            expectedGithubOptions = Object.assign(githubOptions, { displayName: 'github' });
+            expectedExampleOptions = Object.assign(exampleOptions, { displayName: 'example' });
         });
 
         it('registers a plugin', () => {
-            const config = Object.assign(
-                { displayName: 'example' },
-                examplePluginOptions
-            );
+            const config = {
+                displayName: 'example',
+                ...examplePluginOptions
+            };
 
             scm.loadPlugin('example', config);
 
@@ -392,9 +388,9 @@ describe('index test', () => {
         });
 
         it('does not throw an error when a npm module cannot be registered', () => {
-            const config = Object.assign(
-                { displayName: 'DNE.com' }
-            );
+            const config = {
+                displayName: 'DNE.com'
+            };
 
             assert.doesNotThrow(() => {
                 scm.loadPlugin('DNE', config);
@@ -406,10 +402,10 @@ describe('index test', () => {
         });
 
         it('does not throw an error when scm-router plugin is specified for scms setting', () => {
-            const config = Object.assign(
-                { displayName: 'example' },
-                examplePluginOptions
-            );
+            const config = {
+                displayName: 'example',
+                ...examplePluginOptions
+            };
 
             assert.doesNotThrow(() => {
                 scm.loadPlugin('router', config);
@@ -426,10 +422,10 @@ describe('index test', () => {
 
         it('does not throw an error when npm module returns empty scmContext', () => {
             exampleScmMock.getScmContexts.returns(['']);
-            const config = Object.assign(
-                { displayName: 'example' },
-                examplePluginOptions
-            );
+            const config = {
+                displayName: 'example',
+                ...examplePluginOptions
+            };
 
             assert.doesNotThrow(() => {
                 scm.loadPlugin('example', config);
@@ -445,10 +441,10 @@ describe('index test', () => {
         });
 
         it('does not throw an error when scmContext already exists', () => {
-            const config = Object.assign(
-                { displayName: 'github' },
-                examplePluginOptions
-            );
+            const config = {
+                displayName: 'github',
+                ...examplePluginOptions
+            };
 
             scm.loadPlugin('github', config);
 
@@ -463,18 +459,18 @@ describe('index test', () => {
         const payload = { key: 'payload' };
 
         it('choose a webhookScm module', () =>
-            scm.chooseWebhookScm(headers, payload)
+            scm
+                .chooseWebhookScm(headers, payload)
                 .then(module => module.dummyFunction(headers, payload))
-                .then((result) => {
+                .then(result => {
                     assert.strictEqual(result, 'example');
                     assert.notCalled(githubScmMock.dummyFunction);
                     assert.notCalled(gitlabScmMock.dummyFunction);
                     assert.calledOnce(exampleScmMock.dummyFunction);
                     assert.calledWith(exampleScmMock.dummyFunction, headers, payload);
-                })
-        );
+                }));
 
-        it('reject when not registered appropriate scm plugin', () => {
+        it('reject when appropriate scm plugin is not registered', () => {
             scm = new Scm({
                 scms: [
                     {
@@ -486,15 +482,14 @@ describe('index test', () => {
                 ]
             });
 
-            return scm.chooseWebhookScm(headers, payload)
-                .then(module => module.dummyFunction())
-                .then(() => {
-                    assert.fail();
-                }, (err) => {
+            return scm
+                .chooseWebhookScm(headers, payload)
+                .then(module => (module ? module.dummyFunction() : assert.fail()))
+                .catch(err => {
                     assert.notCalled(githubScmMock.dummyFunction);
                     assert.notCalled(gitlabScmMock.dummyFunction);
                     assert.notCalled(exampleScmMock.dummyFunction);
-                    assert.deepEqual(err, new Error('there is no suitable webhook module'));
+                    assert.deepEqual(err.name, 'AssertError');
                 });
         });
     });
@@ -503,39 +498,35 @@ describe('index test', () => {
         const config = { scmContext: exampleScmContext };
 
         it('choose a scm module', () =>
-            scm.chooseScm(config)
+            scm
+                .chooseScm(config)
                 .then(module => module.dummyFunction(config))
-                .then((result) => {
+                .then(result => {
                     assert.strictEqual(result, 'example');
                     assert.notCalled(githubScmMock.dummyFunction);
                     assert.notCalled(gitlabScmMock.dummyFunction);
                     assert.calledOnce(exampleScmMock.dummyFunction);
                     assert.calledWith(exampleScmMock.dummyFunction, config);
-                })
-        );
+                }));
 
         it('reject when the scmContext config does not exist', () =>
-            scm.chooseScm({ somekey: 'somevalue' })
-                .then(module => module.dummyFunction())
-                .then(() => {
-                    assert.fail();
-                }, (err) => {
-                    assert.deepEqual(err, new Error('Not implemented'));
-                })
-        );
+            scm
+                .chooseScm({ somekey: 'somevalue' })
+                .then(module => (module ? module.dummyFunction() : assert.fail()))
+                .catch(err => {
+                    assert.deepEqual(err.message, 'Not implemented');
+                }));
 
         it('reject when not registered appropriate scm plugin', () =>
-            scm.chooseScm({ scmContext: 'hoge.context' })
-                .then(module => module.dummyFunction())
-                .then(() => {
-                    assert.fail();
-                }, (err) => {
+            scm
+                .chooseScm({ scmContext: 'hoge.context' })
+                .then(module => (module ? module.dummyFunction() : assert.fail()))
+                .catch(err => {
                     assert.notCalled(githubScmMock.dummyFunction);
                     assert.notCalled(gitlabScmMock.dummyFunction);
                     assert.notCalled(exampleScmMock.dummyFunction);
-                    assert.deepEqual(err, new Error('Not implemented'));
-                })
-        );
+                    assert.deepEqual(err.message, 'Not implemented');
+                }));
     });
 
     describe('allScm', () => {
@@ -543,8 +534,9 @@ describe('index test', () => {
         const bell = { github: 'githubBell', example: 'exampleBell', gitlab: 'gitlabBell' };
 
         it('call all origin scm module and return combined', () =>
-            scm.allScm(module => module.getBellConfiguration(config))
-                .then((result) => {
+            scm
+                .allScm(module => module.getBellConfiguration(config))
+                .then(result => {
                     assert.deepEqual(result, bell);
                     assert.calledOnce(githubScmMock.getBellConfiguration);
                     assert.calledWith(githubScmMock.getBellConfiguration, config);
@@ -552,304 +544,269 @@ describe('index test', () => {
                     assert.calledWith(exampleScmMock.getBellConfiguration, config);
                     assert.calledOnce(gitlabScmMock.getBellConfiguration);
                     assert.calledWith(gitlabScmMock.getBellConfiguration, config);
-                })
-        );
+                }));
 
         it('reject when origin 1st scm plugin rejects', () => {
             githubScmMock.getBellConfiguration.rejects('bellreject');
 
-            return scm.allScm(module => module.getBellConfiguration())
-                .then(() => {
-                    assert.fail();
-                }, (err) => {
-                    assert.strictEqual(err.name, 'bellreject');
-                });
+            return scm
+                .allScm(module => module.getBellConfiguration())
+                .then(
+                    () => {
+                        assert.fail();
+                    },
+                    err => {
+                        assert.strictEqual(err.name, 'bellreject');
+                    }
+                );
         });
     });
 
     describe('_addWebhook', () => {
         const config = { scmContext: exampleScmContext };
 
-        it('call origin addWebhook', () => (
-            scm._addWebhook(config)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.addWebhook);
-                    assert.notCalled(scmGitlab.addWebhook);
-                    assert.calledOnce(exampleScm.addWebhook);
-                    assert.calledWith(exampleScm.addWebhook, config);
-                })
-        ));
+        it('call origin addWebhook', () =>
+            scm._addWebhook(config).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.addWebhook);
+                assert.notCalled(scmGitlab.addWebhook);
+                assert.calledOnce(exampleScm.addWebhook);
+                assert.calledWith(exampleScm.addWebhook, config);
+            }));
     });
 
     describe('_addDeployKey', () => {
         const config = { scmContext: exampleScmContext };
 
-        it('call origin addDeployKey', () => (
-            scm._addDeployKey(config)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.addDeployKey);
-                    assert.notCalled(scmGitlab.addDeployKey);
-                    assert.calledOnce(exampleScm.addDeployKey);
-                    assert.calledWith(exampleScm.addDeployKey, config);
-                })
-        ));
+        it('call origin addDeployKey', () =>
+            scm._addDeployKey(config).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.addDeployKey);
+                assert.notCalled(scmGitlab.addDeployKey);
+                assert.calledOnce(exampleScm.addDeployKey);
+                assert.calledWith(exampleScm.addDeployKey, config);
+            }));
     });
 
     describe('_parseUrl', () => {
         const config = { scmContext: exampleScmContext };
 
-        it('call origin parseUrl', () => (
-            scm._parseUrl(config)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.parseUrl);
-                    assert.notCalled(scmGitlab.parseUrl);
-                    assert.calledOnce(exampleScm.parseUrl);
-                    assert.calledWith(exampleScm.parseUrl, config);
-                })
-        ));
+        it('call origin parseUrl', () =>
+            scm._parseUrl(config).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.parseUrl);
+                assert.notCalled(scmGitlab.parseUrl);
+                assert.calledOnce(exampleScm.parseUrl);
+                assert.calledWith(exampleScm.parseUrl, config);
+            }));
     });
 
     describe('_parseHook', () => {
         const headers = { key: 'headers' };
         const payload = { key: 'payload' };
 
-        it('call origin parseHook', () => (
-            scm._parseHook(headers, payload)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.parseHook);
-                    assert.notCalled(scmGitlab.parseHook);
-                    assert.calledOnce(exampleScm.parseHook);
-                    assert.calledWith(exampleScm.parseHook, headers, payload);
-                })
-        ));
+        it('call origin parseHook', () =>
+            scm._parseHook(headers, payload).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.parseHook);
+                assert.notCalled(scmGitlab.parseHook);
+                assert.calledOnce(exampleScm.parseHook);
+                assert.calledWith(exampleScm.parseHook, headers, payload);
+            }));
     });
 
     describe('_getCheckoutCommand', () => {
         const config = { scmContext: exampleScmContext };
 
-        it('call origin getCheckourCommand', () => (
-            scm._getCheckoutCommand(config)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.getCheckoutCommand);
-                    assert.notCalled(scmGitlab.getCheckoutCommand);
-                    assert.calledOnce(exampleScm.getCheckoutCommand);
-                    assert.calledWith(exampleScm.getCheckoutCommand, config);
-                })
-        ));
+        it('call origin getCheckourCommand', () =>
+            scm._getCheckoutCommand(config).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.getCheckoutCommand);
+                assert.notCalled(scmGitlab.getCheckoutCommand);
+                assert.calledOnce(exampleScm.getCheckoutCommand);
+                assert.calledWith(exampleScm.getCheckoutCommand, config);
+            }));
     });
 
     describe('_decorateUrl', () => {
         const config = { scmContext: exampleScmContext };
 
-        it('call origin decorateUrl', () => (
-            scm._decorateUrl(config)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.decorateUrl);
-                    assert.notCalled(scmGitlab.decorateUrl);
-                    assert.calledOnce(exampleScm.decorateUrl);
-                    assert.calledWith(exampleScm.decorateUrl, config);
-                })
-        ));
+        it('call origin decorateUrl', () =>
+            scm._decorateUrl(config).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.decorateUrl);
+                assert.notCalled(scmGitlab.decorateUrl);
+                assert.calledOnce(exampleScm.decorateUrl);
+                assert.calledWith(exampleScm.decorateUrl, config);
+            }));
     });
 
     describe('_decorateCommit', () => {
         const config = { scmContext: exampleScmContext };
 
-        it('call origin decorateCommit', () => (
-            scm._decorateCommit(config)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.decorateCommit);
-                    assert.notCalled(scmGitlab.decorateCommit);
-                    assert.calledOnce(exampleScm.decorateCommit);
-                    assert.calledWith(exampleScm.decorateCommit, config);
-                })
-        ));
+        it('call origin decorateCommit', () =>
+            scm._decorateCommit(config).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.decorateCommit);
+                assert.notCalled(scmGitlab.decorateCommit);
+                assert.calledOnce(exampleScm.decorateCommit);
+                assert.calledWith(exampleScm.decorateCommit, config);
+            }));
     });
 
     describe('_decorateAuthor', () => {
         const config = { scmContext: exampleScmContext };
 
-        it('call origin decorateAuthor', () => (
-            scm._decorateAuthor(config)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.decorateAuthor);
-                    assert.notCalled(scmGitlab.decorateAuthor);
-                    assert.calledOnce(exampleScm.decorateAuthor);
-                    assert.calledWith(exampleScm.decorateAuthor, config);
-                })
-        ));
+        it('call origin decorateAuthor', () =>
+            scm._decorateAuthor(config).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.decorateAuthor);
+                assert.notCalled(scmGitlab.decorateAuthor);
+                assert.calledOnce(exampleScm.decorateAuthor);
+                assert.calledWith(exampleScm.decorateAuthor, config);
+            }));
     });
 
     describe('_getPermissions', () => {
         const config = { scmContext: exampleScmContext };
 
-        it('call origin getPermissions', () => (
-            scm._getPermissions(config)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.getPermissions);
-                    assert.notCalled(scmGitlab.getPermissions);
-                    assert.calledOnce(exampleScm.getPermissions);
-                    assert.calledWith(exampleScm.getPermissions, config);
-                })
-        ));
+        it('call origin getPermissions', () =>
+            scm._getPermissions(config).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.getPermissions);
+                assert.notCalled(scmGitlab.getPermissions);
+                assert.calledOnce(exampleScm.getPermissions);
+                assert.calledWith(exampleScm.getPermissions, config);
+            }));
     });
 
     describe('_getOrgPermissions', () => {
         const config = { scmContext: exampleScmContext };
 
-        it('call origin getOrgPermissions', () => (
-            scm._getOrgPermissions(config)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.getOrgPermissions);
-                    assert.notCalled(scmGitlab.getOrgPermissions);
-                    assert.calledOnce(exampleScm.getOrgPermissions);
-                    assert.calledWith(exampleScm.getOrgPermissions, config);
-                })
-        ));
+        it('call origin getOrgPermissions', () =>
+            scm._getOrgPermissions(config).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.getOrgPermissions);
+                assert.notCalled(scmGitlab.getOrgPermissions);
+                assert.calledOnce(exampleScm.getOrgPermissions);
+                assert.calledWith(exampleScm.getOrgPermissions, config);
+            }));
     });
 
     describe('_getCommitSha', () => {
         const config = { scmContext: exampleScmContext };
 
-        it('call origin getCommitSha', () => (
-            scm._getCommitSha(config)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.getCommitSha);
-                    assert.notCalled(scmGitlab.getCommitSha);
-                    assert.calledOnce(exampleScm.getCommitSha);
-                    assert.calledWith(exampleScm.getCommitSha, config);
-                })
-        ));
+        it('call origin getCommitSha', () =>
+            scm._getCommitSha(config).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.getCommitSha);
+                assert.notCalled(scmGitlab.getCommitSha);
+                assert.calledOnce(exampleScm.getCommitSha);
+                assert.calledWith(exampleScm.getCommitSha, config);
+            }));
     });
 
     describe('_getCommitRefSha', () => {
         const config = { scmContext: exampleScmContext };
 
-        it('call origin getCommitRefSha', () => (
-            scm._getCommitRefSha(config)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.getCommitRefSha);
-                    assert.notCalled(scmGitlab.getCommitRefSha);
-                    assert.calledOnce(exampleScm.getCommitRefSha);
-                    assert.calledWith(exampleScm.getCommitRefSha, config);
-                })
-        ));
+        it('call origin getCommitRefSha', () =>
+            scm._getCommitRefSha(config).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.getCommitRefSha);
+                assert.notCalled(scmGitlab.getCommitRefSha);
+                assert.calledOnce(exampleScm.getCommitRefSha);
+                assert.calledWith(exampleScm.getCommitRefSha, config);
+            }));
     });
 
     describe('_addPrComment', () => {
         const config = { scmContext: exampleScmContext };
 
-        it('call origin addPrComment', () => (
-            scm._addPrComment(config)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.addPrComment);
-                    assert.notCalled(scmGitlab.addPrComment);
-                    assert.calledOnce(exampleScm.addPrComment);
-                    assert.calledWith(exampleScm.addPrComment, config);
-                })
-        ));
+        it('call origin addPrComment', () =>
+            scm._addPrComment(config).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.addPrComment);
+                assert.notCalled(scmGitlab.addPrComment);
+                assert.calledOnce(exampleScm.addPrComment);
+                assert.calledWith(exampleScm.addPrComment, config);
+            }));
     });
 
     describe('_updateCommitStatus', () => {
         const config = { scmContext: exampleScmContext };
 
-        it('call origin updateCommitStatus', () => (
-            scm._updateCommitStatus(config)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.updateCommitStatus);
-                    assert.notCalled(scmGitlab.updateCommitStatus);
-                    assert.calledOnce(exampleScm.updateCommitStatus);
-                    assert.calledWith(exampleScm.updateCommitStatus, config);
-                })
-        ));
+        it('call origin updateCommitStatus', () =>
+            scm._updateCommitStatus(config).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.updateCommitStatus);
+                assert.notCalled(scmGitlab.updateCommitStatus);
+                assert.calledOnce(exampleScm.updateCommitStatus);
+                assert.calledWith(exampleScm.updateCommitStatus, config);
+            }));
     });
 
     describe('_getFile', () => {
         const config = { scmContext: exampleScmContext };
 
-        it('call origin getFile', () => (
-            scm._getFile(config)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.getFile);
-                    assert.notCalled(scmGitlab.getFile);
-                    assert.calledOnce(exampleScm.getFile);
-                    assert.calledWith(exampleScm.getFile, config);
-                })
-        ));
+        it('call origin getFile', () =>
+            scm._getFile(config).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.getFile);
+                assert.notCalled(scmGitlab.getFile);
+                assert.calledOnce(exampleScm.getFile);
+                assert.calledWith(exampleScm.getFile, config);
+            }));
     });
 
     describe('_getChangedFiles', () => {
         const config = { scmContext: exampleScmContext };
 
-        it('call origin getChangedFiles', () => (
-            scm._getChangedFiles(config)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.getChangedFiles);
-                    assert.notCalled(scmGitlab.getChangedFiles);
-                    assert.calledOnce(exampleScm.getChangedFiles);
-                    assert.calledWith(exampleScm.getChangedFiles, config);
-                })
-        ));
+        it('call origin getChangedFiles', () =>
+            scm._getChangedFiles(config).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.getChangedFiles);
+                assert.notCalled(scmGitlab.getChangedFiles);
+                assert.calledOnce(exampleScm.getChangedFiles);
+                assert.calledWith(exampleScm.getChangedFiles, config);
+            }));
     });
 
     describe('_getOpenedPRs', () => {
         const config = { scmContext: exampleScmContext };
 
-        it('call origin getOpenedPRs', () => (
-            scm._getOpenedPRs(config)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.getOpenedPRs);
-                    assert.notCalled(scmGitlab.getOpenedPRs);
-                    assert.calledOnce(exampleScm.getOpenedPRs);
-                    assert.calledWith(exampleScm.getOpenedPRs, config);
-                })
-        ));
+        it('call origin getOpenedPRs', () =>
+            scm._getOpenedPRs(config).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.getOpenedPRs);
+                assert.notCalled(scmGitlab.getOpenedPRs);
+                assert.calledOnce(exampleScm.getOpenedPRs);
+                assert.calledWith(exampleScm.getOpenedPRs, config);
+            }));
     });
 
     describe('_getBellConfiguration', () => {
         const bell = { github: 'githubBell', example: 'exampleBell', gitlab: 'gitlabBell' };
 
-        it('call origin getBellConfiguration and return combined', () => (
-            scm._getBellConfiguration()
-                .then((result) => {
-                    assert.deepEqual(result, bell);
-                    assert.calledOnce(scmGithub.getBellConfiguration);
-                    assert.calledOnce(exampleScm.getBellConfiguration);
-                    assert.calledOnce(scmGitlab.getBellConfiguration);
-                })
-        ));
+        it('call origin getBellConfiguration and return combined', () =>
+            scm._getBellConfiguration().then(result => {
+                assert.deepEqual(result, bell);
+                assert.calledOnce(scmGithub.getBellConfiguration);
+                assert.calledOnce(exampleScm.getBellConfiguration);
+                assert.calledOnce(scmGitlab.getBellConfiguration);
+            }));
     });
 
     describe('_getPrInfo', () => {
         const config = { scmContext: exampleScmContext };
 
-        it('call origin getPrInfo', () => (
-            scm._getPrInfo(config)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.getPrInfo);
-                    assert.notCalled(scmGitlab.getPrInfo);
-                    assert.calledOnce(exampleScm.getPrInfo);
-                    assert.calledWith(exampleScm.getPrInfo, config);
-                })
-        ));
+        it('call origin getPrInfo', () =>
+            scm._getPrInfo(config).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.getPrInfo);
+                assert.notCalled(scmGitlab.getPrInfo);
+                assert.calledOnce(exampleScm.getPrInfo);
+                assert.calledWith(exampleScm.getPrInfo, config);
+            }));
     });
 
     describe('stats', () => {
@@ -894,11 +851,10 @@ describe('index test', () => {
         it('returns true when desired scm found', () => {
             exampleScm = scm.scms[exampleScmContext];
 
-            return scm._canHandleWebhook(headers, payload)
-                .then((result) => {
-                    assert.strictEqual(result, true);
-                    assert.calledOnce(exampleScm.canHandleWebhook);
-                });
+            return scm._canHandleWebhook(headers, payload).then(result => {
+                assert.strictEqual(result, true);
+                assert.calledOnce(exampleScm.canHandleWebhook);
+            });
         });
 
         it('returns true when desired scm not found', () => {
@@ -906,13 +862,12 @@ describe('index test', () => {
             exampleScm.canHandleWebhook.resolves(false);
             scmGitlab.canHandleWebhook.resolves(false);
 
-            return scm._canHandleWebhook(headers, payload)
-                .then((result) => {
-                    assert.strictEqual(result, false);
-                    assert.calledOnce(scmGithub.canHandleWebhook);
-                    assert.calledOnce(exampleScm.canHandleWebhook);
-                    assert.calledOnce(scmGitlab.canHandleWebhook);
-                });
+            return scm._canHandleWebhook(headers, payload).then(result => {
+                assert.strictEqual(result, false);
+                assert.calledOnce(scmGithub.canHandleWebhook);
+                assert.calledOnce(exampleScm.canHandleWebhook);
+                assert.calledOnce(scmGitlab.canHandleWebhook);
+            });
         });
     });
 
@@ -971,43 +926,42 @@ describe('index test', () => {
     describe('_getBranchList', () => {
         const config = { scmContext: exampleScmContext };
 
-        it('call origin getBranchList', () => (
-            scm._getBranchList(config)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.getBranchList);
-                    assert.notCalled(scmGitlab.getBranchList);
-                    assert.calledOnce(exampleScm.getBranchList);
-                    assert.calledWith(exampleScm.getBranchList, config);
-                })
-        ));
+        it('call origin getBranchList', () =>
+            scm._getBranchList(config).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.getBranchList);
+                assert.notCalled(scmGitlab.getBranchList);
+                assert.calledOnce(exampleScm.getBranchList);
+                assert.calledWith(exampleScm.getBranchList, config);
+            }));
     });
 
     describe('_openPr', () => {
         const config = {
             checkoutUrl: 'git@github.com:screwdriver-cd/scm-github.git#master',
             token: 'thisisatoken',
-            files: [{
-                name: 'file.txt',
-                content: 'content'
-            }, {
-                name: 'file2.txt',
-                content: 'content'
-            }],
+            files: [
+                {
+                    name: 'file.txt',
+                    content: 'content'
+                },
+                {
+                    name: 'file2.txt',
+                    content: 'content'
+                }
+            ],
             title: 'update file',
             message: 'update file',
             scmContext: exampleScmContext
         };
 
-        it('call origin openPr', () => (
-            scm._openPr(config)
-                .then((result) => {
-                    assert.strictEqual(result, 'example');
-                    assert.notCalled(scmGithub.openPr);
-                    assert.notCalled(scmGitlab.openPr);
-                    assert.calledOnce(exampleScm.openPr);
-                    assert.calledWith(exampleScm.openPr, config);
-                }))
-        );
+        it('call origin openPr', () =>
+            scm._openPr(config).then(result => {
+                assert.strictEqual(result, 'example');
+                assert.notCalled(scmGithub.openPr);
+                assert.notCalled(scmGitlab.openPr);
+                assert.calledOnce(exampleScm.openPr);
+                assert.calledWith(exampleScm.openPr, config);
+            }));
     });
 });
