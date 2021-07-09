@@ -23,7 +23,7 @@ class ScmRouter extends Scm {
         this.scms = {};
 
         if (typeof scmsConfig === 'object') {
-            Object.keys(scmsConfig).forEach((displayName) => {
+            Object.keys(scmsConfig).forEach(displayName => {
                 const scm = scmsConfig[displayName];
 
                 if (typeof scm !== 'object') {
@@ -95,17 +95,22 @@ class ScmRouter extends Scm {
      * @return {Promise}                     scm object
      */
     chooseWebhookScm(headers, payload) {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             // choose a webhook scm module, or null if there is no suitable one
-            async.detect(this.scms, (scm, cb) => {
-                scm.canHandleWebhook(headers, payload)
-                    .then((result) => {
-                        cb(result === false ? null : scm);
-                    }).catch((err) => {
-                        logger.error(err);
-                        cb(null);
-                    });
-            }, ret => resolve(ret));
+            async.detect(
+                this.scms,
+                (scm, cb) => {
+                    scm.canHandleWebhook(headers, payload)
+                        .then(result => {
+                            cb(result === false ? null : scm);
+                        })
+                        .catch(err => {
+                            logger.error(err);
+                            cb(null);
+                        });
+                },
+                ret => resolve(ret)
+            );
         });
     }
 
@@ -204,16 +209,15 @@ class ScmRouter extends Scm {
      * @return {Promise}
      */
     _parseHook(headers, payload) {
-        return this.chooseWebhookScm(headers, payload)
-            .then((scm) => {
-                if (!scm) {
-                    logger.info('Webhook does not match any expected events or actions.');
+        return this.chooseWebhookScm(headers, payload).then(scm => {
+            if (!scm) {
+                logger.info('Webhook does not match any expected events or actions.');
 
-                    return null;
-                }
+                return null;
+            }
 
-                return scm.parseHook(headers, payload);
-            });
+            return scm.parseHook(headers, payload);
+        });
     }
 
     /**
@@ -387,7 +391,7 @@ class ScmRouter extends Scm {
     stats() {
         let result = {};
 
-        Object.keys(this.scms).forEach((key) => {
+        Object.keys(this.scms).forEach(key => {
             result = Object.assign(result, this.scms[key].stats());
         });
 
@@ -411,8 +415,7 @@ class ScmRouter extends Scm {
      * @return {String}                     Full scmContext (e.g. github:github.com)
      */
     _getScmContext({ hostname }) {
-        return Object.keys(this.scms).find(scmContext =>
-            scmContext.split(':')[1] === hostname);
+        return Object.keys(this.scms).find(scmContext => scmContext.split(':')[1] === hostname);
     }
 
     /**
