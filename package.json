@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "@hapi/hoek": "^9.0.4",
-    "async": "^2.6.3",
+    "async": "^3.2.2",
     "screwdriver-logger": "^1.0.0",
     "screwdriver-scm-base": "^7.1.3"
   },
