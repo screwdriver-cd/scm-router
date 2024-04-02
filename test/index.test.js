@@ -75,6 +75,7 @@ describe('index test', () => {
         mock.getReadOnlyInfo = sinon.stub().returns(plugin);
         mock.autoDeployKeyGenerationEnabled = sinon.stub().returns(plugin);
         mock.getWebhookEventsMapping = sinon.stub().returns({ pr: 'pull_request' });
+        mock.isEnterpriseUser = sinon.stub().returns(true);
 
         return mock;
     };
@@ -962,6 +963,19 @@ describe('index test', () => {
                 assert.notCalled(scmGitlab.openPr);
                 assert.calledOnce(exampleScm.openPr);
                 assert.calledWith(exampleScm.openPr, config);
+            }));
+    });
+
+    describe('_isEnterpriseUser', () => {
+        const config = { scmContext: exampleScmContext };
+
+        it('call origin _isEnterpriseUser', () =>
+            scm._isEnterpriseUser(config).then(result => {
+                assert.strictEqual(result, true);
+                assert.notCalled(scmGithub.isEnterpriseUser);
+                assert.notCalled(scmGitlab.isEnterpriseUser);
+                assert.calledOnce(exampleScm.isEnterpriseUser);
+                assert.calledWith(exampleScm.isEnterpriseUser, config);
             }));
     });
 });
