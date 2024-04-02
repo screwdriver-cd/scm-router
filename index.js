@@ -478,6 +478,17 @@ class ScmRouter extends Scm {
     _openPr(config) {
         return this.chooseScm(config).then(scm => scm.openPr(config));
     }
+
+    /**
+     * Check if user belongs to an enterprise
+     * @method _isEnterpriseUser
+     * @param  {Object}     config              Configuration
+     * @param  {String}     config.scmContext   Name of scm context
+     * @return {Boolean}                        True if user belongs to an enterprise
+     */
+    _isEnterpriseUser(config) {
+        return this.chooseScm(config).then(scm => scm.isEnterpriseUser(config));
+    }
 }
 
 module.exports = ScmRouter;
