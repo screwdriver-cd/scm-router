@@ -1,6 +1,6 @@
 {
   "name": "screwdriver-scm-router",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "description": "A generic plugin for routing builds to specified scm",
   "main": "index.js",
   "scripts": {
@@ -46,7 +46,7 @@
     "@hapi/hoek": "^10.0.1",
     "async": "^3.2.4",
     "screwdriver-logger": "^2.0.0",
-    "screwdriver-scm-base": "^8.0.0"
+    "screwdriver-scm-base": "^9.0.0"
   },
   "release": {
     "debug": false
