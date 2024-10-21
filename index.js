@@ -213,7 +213,13 @@ class ScmRouter extends Scm {
             if (!scm) {
                 logger.info('Webhook does not match any expected events or actions.');
 
-                return null;
+                const err = new Error(
+                    'Cannot parse this webhook. Please ensure that the signature is correct or that this SCM is supported.'
+                );
+
+                err.statusCode = 400;
+
+                return Promise.reject(err);
             }
 
             return scm.parseHook(headers, payload);
