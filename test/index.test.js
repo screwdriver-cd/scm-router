@@ -615,7 +615,7 @@ describe('index test', () => {
                 assert.calledWith(exampleScm.parseHook, headers, payload);
             }));
 
-        it('throw error when all scm cannot parse the webhook', () => {
+        it('rejects error when all scm cannot parse the webhook', () => {
             scmGithub.canHandleWebhook.resolves(false);
             scmGitlab.canHandleWebhook.resolves(false);
             exampleScm.canHandleWebhook.resolves(false);
