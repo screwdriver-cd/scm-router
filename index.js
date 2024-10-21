@@ -219,7 +219,7 @@ class ScmRouter extends Scm {
 
                 err.statusCode = 400;
 
-                throw err;
+                return Promise.reject(err);
             }
 
             return scm.parseHook(headers, payload);
