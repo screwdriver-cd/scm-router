@@ -614,6 +614,25 @@ describe('index test', () => {
                 assert.calledOnce(exampleScm.parseHook);
                 assert.calledWith(exampleScm.parseHook, headers, payload);
             }));
+
+        it('throw error when all scm cannot parse the webhook', () => {
+            scmGithub.canHandleWebhook.resolves(false);
+            scmGitlab.canHandleWebhook.resolves(false);
+            exampleScm.canHandleWebhook.resolves(false);
+
+            return scm
+                ._parseHook(headers, payload)
+                .then(() => {
+                    assert.fail('This should not fail the tests');
+                })
+                .catch(err => {
+                    assert.include(err.message, 'Cannot parse this webhook');
+                    assert.strictEqual(err.statusCode, 400);
+                    assert.notCalled(scmGithub.parseHook);
+                    assert.notCalled(scmGitlab.parseHook);
+                    assert.notCalled(exampleScm.parseHook);
+                });
+        });
     });
 
     describe('_getCheckoutCommand', () => {
