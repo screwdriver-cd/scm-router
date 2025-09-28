@@ -91,7 +91,7 @@ class ScmRouter extends Scm {
      * choose webhook scm module
      * @method chooseWebhookScm
      * @param  {Object}     headers          The request headers associated with the webhook payload
-     * @param  {Object}     payload          The webhook payload received from the SCM service
+     * @param  {String}     payload          The webhook payload received from the SCM service
      * @return {Promise}                     scm object
      */
     chooseWebhookScm(headers, payload) {
@@ -205,7 +205,7 @@ class ScmRouter extends Scm {
      * Parse the webhook for the specific source control
      * @method _parseHook
      * @param  {Object}     headers     The request headers associated with the webhook payload
-     * @param  {Object}     payload     The webhook payload received from the SCM service
+     * @param  {String}     payload     The webhook payload received from the SCM service
      * @return {Promise}
      */
     _parseHook(headers, payload) {
@@ -428,7 +428,7 @@ class ScmRouter extends Scm {
      * Determine a scm module can handle the received webhook
      * @method _canHandleWebhook
      * @param  {Object}     headers     The request headers associated with the webhook payload
-     * @param  {Object}     payload     The webhook payload received from the SCM service
+     * @param  {String}     payload     The webhook payload received from the SCM service
      * @return {Promise}
      */
     _canHandleWebhook(headers, payload) {
