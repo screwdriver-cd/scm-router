@@ -1,9 +1,23 @@
 'use strict';
 
 const Scm = require('screwdriver-scm-base');
+const { AsyncLocalStorage } = require('async_hooks');
 const async = require('async');
 const hoek = require('@hapi/hoek');
 const logger = require('screwdriver-logger');
+const REQUEST_CACHE_STORAGE_KEY = Symbol.for('sd.requestCacheStorage');
+
+/**
+ * Get the request-local cache storage instance.
+ * @returns {AsyncLocalStorage<Map<string, Promise<*>>>} Async local storage for request cache entries
+ */
+function getRequestCacheStorage() {
+    if (!global[REQUEST_CACHE_STORAGE_KEY]) {
+        global[REQUEST_CACHE_STORAGE_KEY] = new AsyncLocalStorage();
+    }
+
+    return global[REQUEST_CACHE_STORAGE_KEY];
+}
 
 class ScmRouter extends Scm {
     /**
@@ -42,6 +56,14 @@ class ScmRouter extends Scm {
         if (Object.keys(this.scms).length === 0) {
             throw new Error('No scm config passed in.');
         }
+    }
+
+    withRequestCache(requestCache, method) {
+        if (!(requestCache instanceof Map)) {
+            return method();
+        }
+
+        return getRequestCacheStorage().run(requestCache, method);
     }
 
     /**
