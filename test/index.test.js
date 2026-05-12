@@ -530,6 +530,26 @@ describe('index test', () => {
                 }));
     });
 
+    describe('withRequestCache', () => {
+        it('runs the callback even when requestCache is not a Map', async () => {
+            const callback = sinon.stub().resolves('ok');
+
+            const result = await scm.withRequestCache(undefined, callback);
+
+            assert.strictEqual(result, 'ok');
+            assert.calledOnce(callback);
+        });
+
+        it('runs the callback when requestCache is a Map', async () => {
+            const callback = sinon.stub().resolves('ok');
+
+            const result = await scm.withRequestCache(new Map(), callback);
+
+            assert.strictEqual(result, 'ok');
+            assert.calledOnce(callback);
+        });
+    });
+
     describe('allScm', () => {
         const config = { scmContext: exampleScmContext };
         const bell = { github: 'githubBell', example: 'exampleBell', gitlab: 'gitlabBell' };
